@@ -38,9 +38,12 @@
 		<property name="packagesToScan" value="com.hedatou.wallet.domain" />
 		<property name="hibernateProperties">
 			<value>
-				hibernate.hbm2ddl.auto=update
 				hibernate.show_sql=true
 				hibernate.format_sql=true
+				hibernate.hbm2ddl.auto=update
+				hibernate.cache.use_second_level_cache=true
+				hibernate.cache.default_cache_concurrency_strategy=read-write
+				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
 			</value>
 		</property>
 	</bean>
