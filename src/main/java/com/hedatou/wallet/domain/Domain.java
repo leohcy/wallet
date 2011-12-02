@@ -8,11 +8,12 @@ import javax.persistence.Version;
 @MappedSuperclass
 public abstract class Domain {
 
-	private Long id;
-	private Long version;
-
 	@Id
 	@GeneratedValue
+	private Long id;
+	@Version
+	private Long version;
+
 	public Long getId() {
 		return id;
 	}
@@ -21,7 +22,6 @@ public abstract class Domain {
 		this.id = id;
 	}
 
-	@Version
 	public Long getVersion() {
 		return version;
 	}

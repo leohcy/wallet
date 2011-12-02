@@ -20,14 +20,21 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Cacheable
 public abstract class Record extends Domain {
 
-	private BigDecimal amount;
-	private Date occurTime;
-	private Category category;
-	private String description;
-
 	@NotNull
 	@Digits(integer = 6, fraction = 2)
 	@Min(0)
+	private BigDecimal amount;
+	@NotNull
+	@Past
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date occurTime;
+	@NotNull
+	@ManyToOne
+	private Category category;
+	@Length(max = 128)
+	private String description;
+
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -36,10 +43,6 @@ public abstract class Record extends Domain {
 		this.amount = amount;
 	}
 
-	@NotNull
-	@Past
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getOccurTime() {
 		return occurTime;
 	}
@@ -48,8 +51,6 @@ public abstract class Record extends Domain {
 		this.occurTime = occurTime;
 	}
 
-	@NotNull
-	@ManyToOne
 	public Category getCategory() {
 		return category;
 	}
@@ -58,7 +59,6 @@ public abstract class Record extends Domain {
 		this.category = category;
 	}
 
-	@Length(max = 128)
 	public String getDescription() {
 		return description;
 	}

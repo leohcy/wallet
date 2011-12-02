@@ -20,18 +20,29 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Cacheable
 public class Category extends Domain {
 
-	private String name;
-	private CategoryType type;
-	private BigDecimal total;
-	private Boolean defaults;
-	private Boolean checks;
-	private String description;
-	private Date lastUpdate;
-	private Integer order;
-
 	@NotEmpty
 	@Length(max = 32)
 	@Column(unique = true)
+	private String name;
+	@NotNull
+	private CategoryType type;
+	@NotNull
+	@Digits(integer = 6, fraction = 2)
+	@Min(0)
+	private BigDecimal total;
+	@NotNull
+	private Boolean defaults;
+	@NotNull
+	private Boolean checks;
+	@Length(max = 128)
+	private String description;
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastUpdate;
+	@NotNull
+	private Integer orderNo;
+
 	public String getName() {
 		return name;
 	}
@@ -40,7 +51,6 @@ public class Category extends Domain {
 		this.name = name;
 	}
 
-	@NotNull
 	public CategoryType getType() {
 		return type;
 	}
@@ -49,9 +59,6 @@ public class Category extends Domain {
 		this.type = type;
 	}
 
-	@NotNull
-	@Digits(integer = 6, fraction = 2)
-	@Min(0)
 	public BigDecimal getTotal() {
 		return total;
 	}
@@ -60,7 +67,6 @@ public class Category extends Domain {
 		this.total = total;
 	}
 
-	@NotNull
 	public Boolean getDefaults() {
 		return defaults;
 	}
@@ -69,7 +75,6 @@ public class Category extends Domain {
 		this.defaults = defaults;
 	}
 
-	@NotNull
 	public Boolean getChecks() {
 		return checks;
 	}
@@ -78,7 +83,6 @@ public class Category extends Domain {
 		this.checks = checks;
 	}
 
-	@Length(max = 128)
 	public String getDescription() {
 		return description;
 	}
@@ -87,9 +91,6 @@ public class Category extends Domain {
 		this.description = description;
 	}
 
-	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLastUpdate() {
 		return lastUpdate;
 	}
@@ -98,14 +99,12 @@ public class Category extends Domain {
 		this.lastUpdate = lastUpdate;
 	}
 
-	@NotNull
-	@Column(name = "orderNumber")
-	public Integer getOrder() {
-		return order;
+	public Integer getOrderNo() {
+		return orderNo;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 
 	@Override

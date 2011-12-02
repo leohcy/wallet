@@ -26,7 +26,7 @@
 	
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
-		<property name="jdbcUrl" value="jdbc:h2:${db};MVCC=TRUE" />
+		<property name="jdbcUrl" value="jdbc:h2:${db};MVCC=TRUE;AUTO_SERVER=TRUE" />
 		<property name="user" value="${user}" />
 		<property name="password" value="${passwd}" />
 		<property name="minPoolSize" value="1" />
@@ -41,6 +41,7 @@
 				hibernate.show_sql=true
 				hibernate.format_sql=true
 				hibernate.hbm2ddl.auto=update
+				hibernate.generate_statistics=true
 				hibernate.cache.use_second_level_cache=true
 				hibernate.cache.default_cache_concurrency_strategy=read-write
 				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
@@ -53,5 +54,8 @@
 	<tx:annotation-driven />
 	
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+		p:basename="classpath:messages" p:cacheSeconds="1" />
 	
 </beans>

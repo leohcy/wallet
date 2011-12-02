@@ -21,5 +21,6 @@
 	<mvc:view-controller path="/" view-name="index" />
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+	<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
 
 </beans>

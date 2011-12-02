@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
 @Cacheable
 public class OutlayRecord extends Record {
 
-	private Account outlayAccount;
-
 	@NotNull
 	@ManyToOne
+	private Account outlayAccount;
+
 	public Account getOutlayAccount() {
 		return outlayAccount;
 	}

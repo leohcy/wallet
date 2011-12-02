@@ -9,10 +9,10 @@ import javax.validation.constraints.NotNull;
 @Cacheable
 public class IncomeRecord extends Record {
 
-	private Account incomeAccount;
-
 	@NotNull
 	@ManyToOne
+	private Account incomeAccount;
+
 	public Account getIncomeAccount() {
 		return incomeAccount;
 	}

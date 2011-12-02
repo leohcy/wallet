@@ -9,11 +9,13 @@ import javax.validation.constraints.NotNull;
 @Cacheable
 public class TransferRecord extends Record {
 
-	private Account fromAccount;
-	private Account toAccount;
-
 	@NotNull
 	@ManyToOne
+	private Account fromAccount;
+	@NotNull
+	@ManyToOne
+	private Account toAccount;
+
 	public Account getFromAccount() {
 		return fromAccount;
 	}
@@ -22,8 +24,6 @@ public class TransferRecord extends Record {
 		this.fromAccount = fromAccount;
 	}
 
-	@NotNull
-	@ManyToOne
 	public Account getToAccount() {
 		return toAccount;
 	}
