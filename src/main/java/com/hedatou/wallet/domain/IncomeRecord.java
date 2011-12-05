@@ -1,12 +1,14 @@
 package com.hedatou.wallet.domain;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
-@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class IncomeRecord extends Record {
 
 	@NotNull

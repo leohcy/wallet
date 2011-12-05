@@ -142,6 +142,10 @@ public abstract class DaoSupport<T> {
 		return (T) session().load(domain, id);
 	}
 
+	public T get(long id) {
+		return (T) session().get(domain, id);
+	}
+
 	public void save(T domain) {
 		session().saveOrUpdate(domain);
 	}

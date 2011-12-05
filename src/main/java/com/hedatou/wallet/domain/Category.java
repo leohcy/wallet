@@ -3,7 +3,6 @@ package com.hedatou.wallet.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
@@ -12,12 +11,14 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Category extends Domain {
 
 	@NotEmpty
