@@ -29,8 +29,8 @@
 		<property name="jdbcUrl" value="jdbc:h2:${db};MVCC=TRUE;AUTO_SERVER=TRUE" />
 		<property name="user" value="${user}" />
 		<property name="password" value="${passwd}" />
-		<property name="minPoolSize" value="1" />
-		<property name="maxPoolSize" value="3" />
+		<property name="minPoolSize" value="${minPool}" />
+		<property name="maxPoolSize" value="${maxPool}" />
 	</bean>
 	
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -38,11 +38,10 @@
 		<property name="packagesToScan" value="com.hedatou.wallet.domain" />
 		<property name="hibernateProperties">
 			<value>
-				hibernate.show_sql=true
-				hibernate.format_sql=true
-				hibernate.hbm2ddl.auto=update
-				hibernate.generate_statistics=true
-				hibernate.cache.use_second_level_cache=true
+				hibernate.show_sql=${showSql}
+				hibernate.format_sql=${formatSql}
+				hibernate.generate_statistics=${statistics}
+				hibernate.hbm2ddl.auto=${hbm2ddl}
 				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
 			</value>
 		</property>
@@ -55,6 +54,6 @@
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-		p:basename="classpath:messages" p:cacheSeconds="1" />
+		p:basename="classpath:messages" p:cacheSeconds="${messageCacheSeconds}" />
 	
 </beans>

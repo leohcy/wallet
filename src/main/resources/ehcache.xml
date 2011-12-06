@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
-	<defaultCache eternal="false"
+	<defaultCache statistics="true"
+		eternal="false"
 		maxElementsInMemory="10000"
 		memoryStoreEvictionPolicy="LRU" 
 		timeToIdleSeconds="3600"

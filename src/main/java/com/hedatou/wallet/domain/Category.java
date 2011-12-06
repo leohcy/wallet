@@ -21,6 +21,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Category extends Domain {
 
+	public enum CategoryType {
+		收入, 支出, 转账
+	}
+
 	@NotEmpty
 	@Length(max = 32)
 	@Column(unique = true)

@@ -20,6 +20,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Account extends Domain {
 
+	public enum AccountType {
+		现金, 储蓄卡, 信用卡, 充值卡, 虚拟账户
+	}
+
 	@NotEmpty
 	@Length(max = 32)
 	@Column(unique = true)
