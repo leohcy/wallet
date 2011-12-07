@@ -89,9 +89,9 @@ Ext.onReady(function(){
 
     if(Ext.util.Format){
         Ext.apply(Ext.util.Format, {
-            thousandSeparator: '.',
-            decimalSeparator: ',',
-            currencySign: '\u00a5',  // Chinese Yuan
+            thousandSeparator: ',',
+            decimalSeparator: '.',
+            currencySign: '\uFFE5',  // Chinese Yuan
             dateFormat: 'y年m月d日'
         });
     }

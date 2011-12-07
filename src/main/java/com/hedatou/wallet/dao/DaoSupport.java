@@ -35,20 +35,22 @@ public abstract class DaoSupport<T> {
 		return sessionFactory.getCurrentSession();
 	}
 
+	protected Query query(String hql) {
+		return session().createQuery(hql).setCacheable(true);
+	}
+
 	protected <X> X unique(String hql, Class<X> target) {
-		return (X) session().createQuery(hql).uniqueResult();
+		return (X) query(hql).uniqueResult();
 	}
 
 	protected <X> X unique(String hql, String name, Object value,
 			Class<X> target) {
-		return (X) session().createQuery(hql).setParameter(name, value)
-				.uniqueResult();
+		return (X) query(hql).setParameter(name, value).uniqueResult();
 	}
 
-	protected <X> X unique(String hql, Map<String, Object> params,
+	protected <X> X unique(String hql, Map<String, ? extends Object> params,
 			Class<X> target) {
-		return (X) session().createQuery(hql).setProperties(params)
-				.uniqueResult();
+		return (X) query(hql).setProperties(params).uniqueResult();
 	}
 
 	protected T unique(String hql) {
@@ -59,7 +61,7 @@ public abstract class DaoSupport<T> {
 		return unique(hql, name, value, domain);
 	}
 
-	protected T unique(String hql, Map<String, Object> params) {
+	protected T unique(String hql, Map<String, ? extends Object> params) {
 		return unique(hql, params, domain);
 	}
 
@@ -77,7 +79,7 @@ public abstract class DaoSupport<T> {
 	}
 
 	protected <X> List<X> query(String hql, boolean paging, Class<X> target) {
-		Query query = session().createQuery(hql);
+		Query query = query(hql);
 		if (paging) {
 			pagingParams.setTotal(unique(count(hql), Long.class));
 			query.setFirstResult(pagingParams.getStart()).setMaxResults(
@@ -88,7 +90,7 @@ public abstract class DaoSupport<T> {
 
 	protected <X> List<X> query(String hql, String name, Object value,
 			boolean paging, Class<X> target) {
-		Query query = session().createQuery(hql).setParameter(name, value);
+		Query query = query(hql).setParameter(name, value);
 		if (paging) {
 			pagingParams.setTotal(unique(count(hql), name, value, Long.class));
 			query.setFirstResult(pagingParams.getStart()).setMaxResults(
@@ -97,9 +99,10 @@ public abstract class DaoSupport<T> {
 		return query.list();
 	}
 
-	protected <X> List<X> query(String hql, Map<String, Object> params,
-			boolean paging, Class<X> target) {
-		Query query = session().createQuery(hql).setProperties(params);
+	protected <X> List<X> query(String hql,
+			Map<String, ? extends Object> params, boolean paging,
+			Class<X> target) {
+		Query query = query(hql).setProperties(params);
 		if (paging) {
 			pagingParams.setTotal(unique(count(hql), params, Long.class));
 			query.setFirstResult(pagingParams.getStart()).setMaxResults(
@@ -117,7 +120,7 @@ public abstract class DaoSupport<T> {
 		return query(hql, name, value, paging, domain);
 	}
 
-	protected List<T> query(String hql, Map<String, Object> params,
+	protected List<T> query(String hql, Map<String, ? extends Object> params,
 			boolean paging) {
 		return query(hql, params, paging, domain);
 	}
@@ -130,7 +133,7 @@ public abstract class DaoSupport<T> {
 		session().createQuery(hql).setParameter(name, value).executeUpdate();
 	}
 
-	protected void execute(String hql, Map<String, Object> params) {
+	protected void execute(String hql, Map<String, ? extends Object> params) {
 		session().createQuery(hql).setProperties(params).executeUpdate();
 	}
 

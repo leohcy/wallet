@@ -42,6 +42,7 @@
 				hibernate.format_sql=${formatSql}
 				hibernate.generate_statistics=${statistics}
 				hibernate.hbm2ddl.auto=${hbm2ddl}
+				hibernate.cache.use_query_cache=true
 				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
 			</value>
 		</property>

@@ -1,5 +1,5 @@
 <%@page pageEncoding="utf-8" import="org.joda.time.DateTime"%>
-<%request.setAttribute("now", org.joda.time.DateTime.now().toString("yyyy年MM月dd日"));%>
+<%request.setAttribute("now", DateTime.now().toString("yyyy年MM月dd日"));%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
@@ -19,6 +19,7 @@
 #footer { background:#DFE8F6; text-align:center; font-size:12px; }
 
 .menu-button .x-btn-inner { font-size:14px; font-weight:bold; }
+#home-outlay-sum { color:blue; }
 .icon-income { background-image:url(/resources/images/coins_add.png) !important; }
 .icon-outlay { background-image:url(/resources/images/coins_delete.png) !important; }
 .icon-transfer { background-image:url(/resources/images/email_go.png) !important; }
@@ -29,6 +30,7 @@
 .icon-account { background-image:url(/resources/images/report.png) !important; }
 .icon-category { background-image:url(/resources/images/color_swatch.png) !important; }
 .icon-database { background-image:url(/resources/images/database_gear.png) !important; }
+.icon-reload { background-image:url(/resources/images/arrow_refresh.png) !important; }
 </style>
 	</head>
 	<body>
@@ -43,7 +45,7 @@
 			<div id="header-title"></div><div id="header-date">${now}</div>
 		</div>
 		<div id="footer">和大头 &copy; 2011</div>
-		<script type="text/javascript" src="/resources/ext-4.0.7/ext-all.js"></script>
+		<script type="text/javascript" src="/resources/ext-4.0.7/ext-all-debug.js"></script>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="/resources/scripts/wallet.js"></script>
 		<script type="text/javascript">
