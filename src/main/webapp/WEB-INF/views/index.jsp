@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>我的账本</title>
+		<title></title>
 		<link rel="icon" type="image/x-icon" href="/resources/images/logo.ico" />
 		<link rel="stylesheet" type="text/css" href="/resources/ext-4.0.7/css/ext-all.css" />
 		<style type="text/css">
@@ -17,6 +17,18 @@
 #header-title { float:left; height:48px; line-height:48px; margin-left:96px; font-size:32px; font-weight:bold; color:#354854; }
 #header-date { float:right; margin-top:28px; font-size:12px; font-weight:bold; }
 #footer { background:#DFE8F6; text-align:center; font-size:12px; }
+
+.menu-button .x-btn-inner { font-size:14px; font-weight:bold; }
+.icon-income { background-image:url(/resources/images/coins_add.png) !important; }
+.icon-outlay { background-image:url(/resources/images/coins_delete.png) !important; }
+.icon-transfer { background-image:url(/resources/images/email_go.png) !important; }
+.icon-record { background-image:url(/resources/images/book_addresses.png) !important; }
+.icon-week-stats { background-image:url(/resources/images/chart_pie.png) !important; }
+.icon-month-stats { background-image:url(/resources/images/chart_bar.png) !important; }
+.icon-assets-stats { background-image:url(/resources/images/chart_line.png) !important; }
+.icon-account { background-image:url(/resources/images/report.png) !important; }
+.icon-category { background-image:url(/resources/images/color_swatch.png) !important; }
+.icon-database { background-image:url(/resources/images/database_gear.png) !important; }
 </style>
 	</head>
 	<body>
@@ -28,80 +40,18 @@
 	        </div>
 	    </div>
 		<div id="header">
-			<div id="header-title">我的账本</div><div id="header-date">${now}</div>
+			<div id="header-title"></div><div id="header-date">${now}</div>
 		</div>
 		<div id="footer">和大头 &copy; 2011</div>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-all.js"></script>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="/resources/scripts/wallet.js"></script>
 		<script type="text/javascript">
 Ext.onReady(function() {
+    Ext.create("Wallet.View");
 	Ext.fly("loading").animate({ opacity:0, remove:true, duration:800 });
     Ext.fly("loading-mask").animate({ opacity:0, remove:true, duration:400 });
-    init();
 });
-
-function init() {
-	var menu = Ext.create("Ext.menu.Menu", {
-		region: "west",
-		margin: "5 0 5 5",
-		plain: true,
-		floating: false,
-		defaults: {
-			xtype: "buttongroup",
-			margin: "2",
-			columns: 1,
-			defaults: {
-				xtype: "button",
-				scale: "medium",
-				margin: "2",
-				width: 120
-			}
-		},
-		items: [ {
-				title: "记账",
-				items: [
-					{ text: "1" },
-					{ text: "2" },
-					{ text: "3" }
-				]
-			}, {
-				title: "统计",
-				items: [
-					{ text: "4" },
-					{ text: "5" },
-					{ text: "6" }
-				]
-			}, {
-				title: "管理",
-				items: [
-					{ text: "7" },
-					{ text: "8" },
-					{ text: "9" }
-				]
-			}
-		]
-	});
-	Ext.create("Ext.container.Viewport", {
-		layout: "border",
-		items: [ {
-				region: "north",
-				margin: "5 5 0 5",
-				border: false,
-				contentEl: "header"
-			}, {
-				region: "south",
-				margin: "0 5 5 5",
-				border: false,
-				contentEl: "footer"
-			}, {
-				region: "center",
-				margin: "5",
-				html: "CENTER"
-			},
-			menu
-		]
-	});
-}
 </script>
 	</body>
 </html>
