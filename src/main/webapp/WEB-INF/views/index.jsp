@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title></title>
+		<title>我的账本</title>
 		<link rel="icon" type="image/x-icon" href="/resources/images/logo.ico" />
 		<link rel="stylesheet" type="text/css" href="/resources/ext-4.0.7/css/ext-all.css" />
 		<style type="text/css">
@@ -19,18 +19,24 @@
 #footer { background:#DFE8F6; text-align:center; font-size:12px; }
 
 .menu-button .x-btn-inner { font-size:14px; font-weight:bold; }
-#home-outlay-sum { color:blue; }
+.statistics { color:blue; }
+.positive { color:green; }
+.negative { color:red; }
 .icon-income { background-image:url(/resources/images/coins_add.png) !important; }
 .icon-outlay { background-image:url(/resources/images/coins_delete.png) !important; }
 .icon-transfer { background-image:url(/resources/images/email_go.png) !important; }
 .icon-record { background-image:url(/resources/images/book_addresses.png) !important; }
 .icon-week-stats { background-image:url(/resources/images/chart_pie.png) !important; }
 .icon-month-stats { background-image:url(/resources/images/chart_bar.png) !important; }
-.icon-assets-stats { background-image:url(/resources/images/chart_line.png) !important; }
+.icon-asset-stats { background-image:url(/resources/images/chart_line.png) !important; }
 .icon-account { background-image:url(/resources/images/report.png) !important; }
 .icon-category { background-image:url(/resources/images/color_swatch.png) !important; }
 .icon-database { background-image:url(/resources/images/database_gear.png) !important; }
 .icon-reload { background-image:url(/resources/images/arrow_refresh.png) !important; }
+.icon-query { background-image:url(/resources/images/magnifier.png) !important; }
+.icon-week { background-image:url(/resources/images/application_form_magnify.png) !important; }
+.icon-month { background-image:url(/resources/images/date_magnify.png) !important; }
+.icon-reset { background-image:url(/resources/images/control_repeat_blue.png) !important; }
 </style>
 	</head>
 	<body>
@@ -42,7 +48,7 @@
 	        </div>
 	    </div>
 		<div id="header">
-			<div id="header-title"></div><div id="header-date">${now}</div>
+			<div id="header-title">我的账本</div><div id="header-date">${now}</div>
 		</div>
 		<div id="footer">和大头 &copy; 2011</div>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-all-debug.js"></script>
@@ -50,7 +56,7 @@
 		<script type="text/javascript" src="/resources/scripts/wallet.js"></script>
 		<script type="text/javascript">
 Ext.onReady(function() {
-    Ext.create("Wallet.View");
+    Ext.create("wallet.app");
 	Ext.fly("loading").animate({ opacity:0, remove:true, duration:800 });
     Ext.fly("loading-mask").animate({ opacity:0, remove:true, duration:400 });
 });

@@ -5,10 +5,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hedatou.wallet.util.PagingParams;
@@ -33,6 +35,10 @@ public abstract class DaoSupport<T> {
 
 	protected Session session() {
 		return sessionFactory.getCurrentSession();
+	}
+
+	protected Criteria criteria() {
+		return session().createCriteria(domain).setCacheable(true);
 	}
 
 	protected Query query(String hql) {
@@ -65,6 +71,15 @@ public abstract class DaoSupport<T> {
 		return unique(hql, params, domain);
 	}
 
+	protected Criteria paging(Criteria criteria) {
+		pagingParams.setTotal((Long) criteria.setProjection(
+				Projections.rowCount()).uniqueResult());
+		return criteria.setProjection(null)
+				.setResultTransformer(Criteria.ROOT_ENTITY)
+				.setFirstResult(pagingParams.getStart())
+				.setMaxResults(pagingParams.getLimit());
+	}
+
 	private String count(String hql) {
 		if (hql.startsWith("from")) {
 			hql = "select count(*) " + hql;
@@ -78,24 +93,24 @@ public abstract class DaoSupport<T> {
 		return hql;
 	}
 
+	private void paging(Query query, long total) {
+		pagingParams.setTotal(total);
+		query.setFirstResult(pagingParams.getStart()).setMaxResults(
+				pagingParams.getLimit());
+	}
+
 	protected <X> List<X> query(String hql, boolean paging, Class<X> target) {
 		Query query = query(hql);
-		if (paging) {
-			pagingParams.setTotal(unique(count(hql), Long.class));
-			query.setFirstResult(pagingParams.getStart()).setMaxResults(
-					pagingParams.getLimit());
-		}
+		if (paging)
+			paging(query, unique(count(hql), Long.class));
 		return query.list();
 	}
 
 	protected <X> List<X> query(String hql, String name, Object value,
 			boolean paging, Class<X> target) {
 		Query query = query(hql).setParameter(name, value);
-		if (paging) {
-			pagingParams.setTotal(unique(count(hql), name, value, Long.class));
-			query.setFirstResult(pagingParams.getStart()).setMaxResults(
-					pagingParams.getLimit());
-		}
+		if (paging)
+			paging(query, unique(count(hql), name, value, Long.class));
 		return query.list();
 	}
 
@@ -103,11 +118,8 @@ public abstract class DaoSupport<T> {
 			Map<String, ? extends Object> params, boolean paging,
 			Class<X> target) {
 		Query query = query(hql).setProperties(params);
-		if (paging) {
-			pagingParams.setTotal(unique(count(hql), params, Long.class));
-			query.setFirstResult(pagingParams.getStart()).setMaxResults(
-					pagingParams.getLimit());
-		}
+		if (paging)
+			paging(query, unique(count(hql), params, Long.class));
 		return query.list();
 	}
 

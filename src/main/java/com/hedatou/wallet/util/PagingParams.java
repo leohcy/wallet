@@ -28,18 +28,6 @@ public class PagingParams {
 		holder.get().put("limit", limit);
 	}
 
-	public void setPageNo(int pageNo) {
-		Preconditions.checkArgument(pageNo > 0,
-				"paging param pageNo must be positive: %s", pageNo);
-		holder.get().put("pageNo", pageNo);
-	}
-
-	public void setPageSize(int pageSize) {
-		Preconditions.checkArgument(pageSize > 0,
-				"paging param pageSize must be positive: %s", pageSize);
-		holder.get().put("pageSize", pageSize);
-	}
-
 	public void setTotal(long total) {
 		Preconditions.checkArgument(total >= 0,
 				"paging param total must not be negative: %s", total);
@@ -48,23 +36,16 @@ public class PagingParams {
 
 	public int getStart() {
 		Number start = holder.get().get("start");
-		if (start != null)
-			return start.intValue();
-		Number pageNo = holder.get().get("pageNo");
-		Number pageSize = holder.get().get("pageSize");
-		Preconditions.checkState(pageNo != null && pageSize != null,
+		Preconditions.checkState(start != null,
 				"paging parameters not initialized yet");
-		return (pageNo.intValue() - 1) * pageSize.intValue();
+		return start.intValue();
 	}
 
 	public int getLimit() {
 		Number limit = holder.get().get("limit");
-		if (limit != null)
-			return limit.intValue();
-		Number pageSize = holder.get().get("pageSize");
-		Preconditions.checkState(pageSize != null,
+		Preconditions.checkState(limit != null,
 				"paging parameters not initialized yet");
-		return pageSize.intValue();
+		return limit.intValue();
 	}
 
 	public long getTotal() {
@@ -72,15 +53,6 @@ public class PagingParams {
 		Preconditions.checkState(total != null,
 				"total count not calculated yet");
 		return total.longValue();
-	}
-
-	public int getPageCount() {
-		Number total = holder.get().get("total");
-		Number pageSize = holder.get().get("pageSize");
-		Preconditions.checkState(total != null && pageSize != null,
-				"total count not calculated yet");
-		return (int) ((total.longValue() + pageSize.intValue() - 1) / pageSize
-				.intValue());
 	}
 
 	public void finish() {

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hedatou.wallet.dao.RecordDao;
 import com.hedatou.wallet.domain.Category.CategoryType;
-import com.hedatou.wallet.dto.Pair;
+import com.hedatou.wallet.dto.GroupItem;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +18,7 @@ public class StatisticsService {
 	@Autowired
 	private RecordDao recordDao;
 
-	public List<Pair> latest30DaysOutlay() {
+	public List<GroupItem> latest30DaysOutlay() {
 		DateTime start = DateTime.now().millisOfDay().withMinimumValue()
 				.minusDays(30);
 		DateTime end = DateTime.now().millisOfDay().withMaximumValue();

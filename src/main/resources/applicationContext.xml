@@ -41,7 +41,7 @@
 				hibernate.show_sql=${showSql}
 				hibernate.format_sql=${formatSql}
 				hibernate.generate_statistics=${statistics}
-				hibernate.hbm2ddl.auto=${hbm2ddl}
+				hibernate.hbm2ddl.auto=update
 				hibernate.cache.use_query_cache=true
 				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
 			</value>
@@ -54,7 +54,7 @@
 	
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-		p:basename="classpath:messages" p:cacheSeconds="${messageCacheSeconds}" />
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+		p:basename="classpath:messages" />
 	
 </beans>

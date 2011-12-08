@@ -1,11 +1,11 @@
 package com.hedatou.wallet.dto;
 
-public class Pair {
+public class GroupItem {
 
 	private String name;
 	private Object value;
 
-	public Pair(String name, Object value) {
+	public GroupItem(String name, Object value) {
 		this.name = name;
 		this.value = value;
 	}

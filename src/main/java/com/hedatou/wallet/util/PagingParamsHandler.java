@@ -1,14 +1,16 @@
 package com.hedatou.wallet.util;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 
-@Controller
-public class PagingParamHandler {
+public class PagingParamsHandler extends HandlerInterceptorAdapter {
 
 	@Autowired
 	private PagingParams pagingParams;
@@ -33,6 +35,13 @@ public class PagingParamHandler {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request,
+			HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+		pagingParams.finish();
 	}
 
 }
