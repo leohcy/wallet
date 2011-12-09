@@ -37,6 +37,8 @@
 .icon-week { background-image:url(/resources/images/application_form_magnify.png) !important; }
 .icon-month { background-image:url(/resources/images/date_magnify.png) !important; }
 .icon-reset { background-image:url(/resources/images/control_repeat_blue.png) !important; }
+.icon-confirm { background-image:url(/resources/images/tick.png) !important; }
+.icon-cancel { background-image:url(/resources/images/cross.png) !important; }
 </style>
 	</head>
 	<body>
@@ -48,15 +50,21 @@
 	        </div>
 	    </div>
 		<div id="header">
-			<div id="header-title">我的账本</div><div id="header-date">${now}</div>
+			<div id="header-title"> 我的账本</div><div id="header-date">${now}</div>
 		</div>
 		<div id="footer">和大头 &copy; 2011</div>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-all-debug.js"></script>
 		<script type="text/javascript" src="/resources/ext-4.0.7/ext-lang-zh_CN.js"></script>
-		<script type="text/javascript" src="/resources/scripts/wallet.js"></script>
 		<script type="text/javascript">
 Ext.onReady(function() {
-    Ext.create("wallet.app");
+	Ext.QuickTips.init();
+	Ext.Loader.setConfig({
+        enabled: true,
+        paths: {
+        	wallet: "/resources/scripts"
+       	}
+    });
+	Ext.create("wallet.app");
 	Ext.fly("loading").animate({ opacity:0, remove:true, duration:800 });
     Ext.fly("loading-mask").animate({ opacity:0, remove:true, duration:400 });
 });

@@ -22,4 +22,11 @@ public class CategoryController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("income")
+	public View income(Model model) {
+		model.addAttribute("data", service.income()).addAttribute("success",
+				true);
+		return view;
+	}
+
 }

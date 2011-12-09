@@ -157,8 +157,8 @@ public abstract class DaoSupport<T> {
 		return (T) session().load(domain, id);
 	}
 
-	public T get(long id) {
-		return (T) session().get(domain, id);
+	public void refresh(T domain) {
+		session().refresh(domain);
 	}
 
 	public void save(T domain) {

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hedatou.wallet.dao.CategoryDao;
 import com.hedatou.wallet.domain.Category;
+import com.hedatou.wallet.domain.Category.CategoryType;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,6 +19,10 @@ public class CategoryService {
 
 	public List<Category> sorted() {
 		return dao.sorted();
+	}
+
+	public List<Category> income() {
+		return dao.byType(CategoryType.收入);
 	}
 
 }
