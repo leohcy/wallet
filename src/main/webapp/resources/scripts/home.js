@@ -25,7 +25,8 @@ Ext.define("wallet.home", {
 						"资产：<span class='statistics'>" + sum + "</span>");
 			}
 		});
-		var grid = Ext.create("Ext.grid.Panel", {
+		var grid = {
+			xtype : "grid",
 			flex : 2,
 			border : false,
 			loadMask : true,
@@ -49,7 +50,7 @@ Ext.define("wallet.home", {
 				menuDisabled : true,
 				renderer : util.datetime
 			} ]
-		});
+		};
 		var chart = util.column({
 			params : {
 				flex : 3
@@ -78,7 +79,7 @@ Ext.define("wallet.home", {
 				});
 			}
 		});
-		return Ext.create("Ext.panel.Panel", {
+		return {
 			flex : 2,
 			margin : "3",
 			title : "资产状况",
@@ -98,7 +99,7 @@ Ext.define("wallet.home", {
 				id : "home-assets-sum",
 				text : "资产：<span class='statistics'>￥0.00</span>"
 			} ]
-		});
+		};
 	},
 
 	initOutlay : function() {
@@ -126,7 +127,7 @@ Ext.define("wallet.home", {
 		});
 		var range = util.date(util.addDays(new Date(), -30)) + " ~ "
 				+ util.date(new Date());
-		return Ext.create("Ext.panel.Panel", {
+		return {
 			flex : 3,
 			margin : "3 3 3 0",
 			title : "近30日消费分布",
@@ -143,6 +144,6 @@ Ext.define("wallet.home", {
 				id : "home-outlay-sum",
 				text : "消费：<span class='statistics'>￥0.00</span>"
 			} ]
-		});
+		};
 	}
 });

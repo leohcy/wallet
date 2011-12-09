@@ -55,6 +55,6 @@
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
-		p:basename="classpath:messages" />
+		p:basename="messages" />
 	
 </beans>

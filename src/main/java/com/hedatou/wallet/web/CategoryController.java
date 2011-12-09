@@ -29,4 +29,18 @@ public class CategoryController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("outlay")
+	public View outlay(Model model) {
+		model.addAttribute("data", service.outlay()).addAttribute("success",
+				true);
+		return view;
+	}
+
+	@RequestMapping("transfer")
+	public View transfer(Model model) {
+		model.addAttribute("data", service.transfer()).addAttribute("success",
+				true);
+		return view;
+	}
+
 }

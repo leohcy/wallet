@@ -99,22 +99,19 @@ Ext.define("wallet.app", {
 	menuHandler : function(widget) {
 		var app = this;
 		return function() {
-			app.addPanel(widget, this.iconCls);
+			var tabs = app.down("tabpanel");
+			var id = widget + "-panel";
+			var tab = Ext.getCmp(id);
+			if (!tab) {
+				tab = Ext.create(widget, {
+					id : id,
+					iconCls : this.iconCls,
+					closable : true
+				});
+				tabs.add(tab);
+			}
+			tabs.setActiveTab(tab);
 		};
-	},
-	addPanel : function(widget, iconCls) {
-		var tabs = this.down("tabpanel");
-		var id = widget + "-panel";
-		var tab = Ext.getCmp(id);
-		if (!tab) {
-			tab = Ext.create(widget, {
-				id : id,
-				iconCls : iconCls,
-				closable : true
-			});
-			tabs.add(tab);
-		}
-		tabs.setActiveTab(tab);
 	},
 	showDialog : function(title, widget) {
 		return function() {

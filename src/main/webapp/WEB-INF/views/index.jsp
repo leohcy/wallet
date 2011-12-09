@@ -39,6 +39,8 @@
 .icon-reset { background-image:url(/resources/images/control_repeat_blue.png) !important; }
 .icon-confirm { background-image:url(/resources/images/tick.png) !important; }
 .icon-cancel { background-image:url(/resources/images/cross.png) !important; }
+.icon-update { background-image:url(/resources/images/calculator_edit.png) !important; }
+.icon-remove { background-image:url(/resources/images/calculator_delete.png) !important; }
 </style>
 	</head>
 	<body>

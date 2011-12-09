@@ -17,6 +17,9 @@ import org.springframework.web.servlet.View;
 import com.hedatou.wallet.domain.Account.AccountType;
 import com.hedatou.wallet.domain.Category.CategoryType;
 import com.hedatou.wallet.domain.IncomeRecord;
+import com.hedatou.wallet.domain.OutlayRecord;
+import com.hedatou.wallet.domain.Record;
+import com.hedatou.wallet.domain.TransferRecord;
 import com.hedatou.wallet.service.RecordService;
 import com.hedatou.wallet.util.PagingParams;
 
@@ -46,6 +49,29 @@ public class RecordController extends ControllerSupport {
 	@RequestMapping(value = "income")
 	public View income(@Valid IncomeRecord record, BindingResult binding,
 			Model model) {
+		return save(record, binding, model);
+	}
+
+	@RequestMapping(value = "outlay")
+	public View outlay(@Valid OutlayRecord record, BindingResult binding,
+			Model model) {
+		return save(record, binding, model);
+	}
+
+	@RequestMapping(value = "transfer")
+	public View transfer(@Valid TransferRecord record, BindingResult binding,
+			Model model) {
+		return save(record, binding, model);
+	}
+
+	@RequestMapping(value = "remove")
+	public View remove(long id, Model model) {
+		service.remove(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	private View save(Record record, BindingResult binding, Model model) {
 		if (binding.hasErrors())
 			return handleBindingError(binding, model);
 		service.save(record);

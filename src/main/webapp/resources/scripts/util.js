@@ -65,6 +65,7 @@ Ext.define("wallet.util", {
 
 	pie : function(args) {
 		var params = {
+			xtype : "chart",
 			store : args.store,
 			animate : true,
 			insetPadding : args.padding || 10,
@@ -98,11 +99,12 @@ Ext.define("wallet.util", {
 		};
 		if (typeof args.params != "undefined")
 			Ext.apply(params, args.params);
-		return Ext.create("Ext.chart.Chart", params);
+		return params;
 	},
 
 	column : function(args) {
 		var params = {
+			xtype : "chart",
 			store : args.store,
 			animate : true,
 			axes : [ {
@@ -147,7 +149,7 @@ Ext.define("wallet.util", {
 		};
 		if (typeof args.params != "undefined")
 			Ext.apply(params, args.params);
-		return Ext.create("Ext.chart.Chart", params);
+		return params;
 	}
 });
 window.util = Ext.create("wallet.util");
@@ -156,16 +158,19 @@ Ext.define("model.account", {
 	extend : "Ext.data.Model",
 	fields : [ "id", "name", "type", "balance", "defaultIncome",
 			"defaultOutlay", "display", "description", "lastUpdate",
-			"createTime", "orderNo", "version" ]
+			"createTime", "orderNo", "version" ],
+	idProperty : "id"
 });
 Ext.define("model.category", {
 	extend : "Ext.data.Model",
 	fields : [ "id", "name", "type", "total", "defaults", "checks",
-			"description", "lastUpdate", "orderNo", "version" ]
+			"description", "lastUpdate", "orderNo", "version" ],
+	idProperty : "id"
 });
 Ext.define("model.record", {
 	extend : "Ext.data.Model",
 	fields : [ "id", "occurTime", "amount", "category", "description",
 			"incomeAccount", "outlayAccount", "fromAccount", "toAccount",
-			"version" ]
+			"version" ],
+	idProperty : "id"
 });

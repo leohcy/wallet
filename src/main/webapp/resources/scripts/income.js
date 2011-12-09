@@ -2,6 +2,7 @@ Ext.define("wallet.income", {
 	extend : "Ext.form.Panel",
 
 	initComponent : function() {
+		var form = this;
 		var categoryStore = util.store({
 			model : "model.category",
 			url : "/category/income",
@@ -9,8 +10,7 @@ Ext.define("wallet.income", {
 				var idx = this.findExact("defaults", true);
 				if (idx != -1) {
 					var model = this.getAt(idx);
-					Ext.getCmp("income-form").getForm()
-							.findField("category.id").select(model);
+					form.getForm().findField("category.id").select(model);
 				}
 			}
 		});
@@ -21,8 +21,7 @@ Ext.define("wallet.income", {
 				var idx = this.findExact("defaultIncome", true);
 				if (idx != -1) {
 					var model = this.getAt(idx);
-					Ext.getCmp("income-form").getForm().findField(
-							"incomeAccount.id").select(model);
+					form.getForm().findField("incomeAccount.id").select(model);
 				}
 			}
 		});
@@ -30,7 +29,6 @@ Ext.define("wallet.income", {
 			border : false,
 			margin : "20",
 			bodyStyle : "background:#DFE8F6",
-			id : "income-form",
 			fieldDefaults : {
 				anchor : "100%",
 				allowBlank : false
@@ -91,38 +89,44 @@ Ext.define("wallet.income", {
 				text : "确认",
 				iconCls : "icon-confirm",
 				scale : "medium",
-				handler : this.confirm
+				handler : this.confirm()
 			}, {
 				text : "取消",
 				iconCls : "icon-cancel",
 				scale : "medium",
-				handler : this.close
+				handler : this.close()
 			} ]
 		});
 		this.callParent(arguments);
 	},
 	confirm : function() {
-		var form = Ext.getCmp("income-form").getForm();
-		if (form.isValid()) {
-			var params = form.getValues();
-			params.occurTime = params.date + " " + params.time + ":00";
-			form.submit({
-				clientValidation : false,
-				url : "/record/income",
-				params : params,
-				waitTitle : "提示",
-				waitMsg : "保存中...",
-				success : function(form, action) {
-					Ext.getCmp("income-form").close();
-				},
-				failure : function(form, action) {
-					if (!json.errors)
-						Ext.Msg.alert("提示", json.message);
-				}
-			});
-		}
+		var panel = this;
+		return function() {
+			var form = panel.getForm();
+			if (form.isValid()) {
+				var params = form.getValues();
+				params.occurTime = params.date + " " + params.time + ":00";
+				form.submit({
+					clientValidation : false,
+					url : "/record/income",
+					params : params,
+					waitTitle : "提示",
+					waitMsg : "保存中...",
+					success : function(form, action) {
+						panel.close()();
+					},
+					failure : function(form, action) {
+						if (!action.result.errors)
+							Ext.Msg.alert("提示", action.result.message);
+					}
+				});
+			}
+		};
 	},
 	close : function() {
-		Ext.getCmp("income-form").ownerCt.close();
+		var panel = this;
+		return function() {
+			panel.ownerCt.close();
+		};
 	}
 });

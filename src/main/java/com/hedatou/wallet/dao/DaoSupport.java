@@ -153,8 +153,8 @@ public abstract class DaoSupport<T> {
 	// 公共方法
 	// ----------
 
-	public T load(long id) {
-		return (T) session().load(domain, id);
+	public T get(long id) {
+		return (T) session().get(domain, id);
 	}
 
 	public void refresh(T domain) {
@@ -167,10 +167,6 @@ public abstract class DaoSupport<T> {
 
 	public void delete(T domain) {
 		session().delete(domain);
-	}
-
-	public void delete(long id) {
-		delete(load(id));
 	}
 
 	public void init(Object proxy) {

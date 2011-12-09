@@ -17,7 +17,9 @@ import com.hedatou.wallet.domain.Account.AccountType;
 import com.hedatou.wallet.domain.Category;
 import com.hedatou.wallet.domain.Category.CategoryType;
 import com.hedatou.wallet.domain.IncomeRecord;
+import com.hedatou.wallet.domain.OutlayRecord;
 import com.hedatou.wallet.domain.Record;
+import com.hedatou.wallet.domain.TransferRecord;
 
 @Service
 @Transactional(readOnly = true)
@@ -57,8 +59,55 @@ public class RecordService {
 			accountDao.refresh(account);
 			account.setLastUpdate(new Date());
 			account.setBalance(account.getBalance().add(income.getAmount()));
+		} else if (record instanceof OutlayRecord) {
+			OutlayRecord outlay = (OutlayRecord) record;
+			Account account = outlay.getOutlayAccount();
+			accountDao.refresh(account);
+			account.setLastUpdate(new Date());
+			account.setBalance(account.getBalance()
+					.subtract(outlay.getAmount()));
+		} else if (record instanceof TransferRecord) {
+			TransferRecord transfer = (TransferRecord) record;
+			Account from = transfer.getFromAccount();
+			accountDao.refresh(from);
+			from.setLastUpdate(new Date());
+			from.setBalance(from.getBalance().subtract(transfer.getAmount()));
+			Account to = transfer.getToAccount();
+			accountDao.refresh(to);
+			to.setLastUpdate(new Date());
+			to.setBalance(to.getBalance().add(transfer.getAmount()));
 		}
 		dao.save(record);
+	}
+
+	@Transactional
+	public void remove(long id) {
+		Record record = dao.get(id);
+		Category category = record.getCategory();
+		category.setLastUpdate(new Date());
+		category.setTotal(category.getTotal().subtract(record.getAmount()));
+
+		if (record instanceof IncomeRecord) {
+			IncomeRecord income = (IncomeRecord) record;
+			Account account = income.getIncomeAccount();
+			account.setLastUpdate(new Date());
+			account.setBalance(account.getBalance()
+					.subtract(income.getAmount()));
+		} else if (record instanceof OutlayRecord) {
+			OutlayRecord outlay = (OutlayRecord) record;
+			Account account = outlay.getOutlayAccount();
+			account.setLastUpdate(new Date());
+			account.setBalance(account.getBalance().add(outlay.getAmount()));
+		} else if (record instanceof TransferRecord) {
+			TransferRecord transfer = (TransferRecord) record;
+			Account from = transfer.getFromAccount();
+			from.setLastUpdate(new Date());
+			from.setBalance(from.getBalance().add(transfer.getAmount()));
+			Account to = transfer.getToAccount();
+			to.setLastUpdate(new Date());
+			to.setBalance(to.getBalance().subtract(transfer.getAmount()));
+		}
+		dao.delete(record);
 	}
 
 }

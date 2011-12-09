@@ -30,13 +30,13 @@ Ext.define("wallet.record", {
 			url : "/account/sorted",
 			autoLoad : false
 		});
-		return Ext.create("Ext.form.Panel", {
+		return {
 			region : "north",
 			height : 108,
 			margin : "5 10 0 10",
+			xtype : "form",
 			bodyStyle : "background:#DFE8F6",
 			border : false,
-			id : "record-form",
 			fieldDefaults : {
 				labelAlign : "top",
 				anchor : "90%"
@@ -138,7 +138,7 @@ Ext.define("wallet.record", {
 			buttons : [ {
 				text : "查询",
 				iconCls : "icon-query",
-				handler : this.query
+				handler : this.doQuery()
 			}, {
 				text : "本周",
 				iconCls : "icon-week",
@@ -152,23 +152,24 @@ Ext.define("wallet.record", {
 				iconCls : "icon-reset",
 				handler : this.reset()
 			} ]
-		});
+		};
 	},
 	level1combo : function(name) {
+		var panel = this;
 		return {
 			select : function() {
-				var form = Ext.getCmp("record-form").getForm();
-				var combo = form.findField(name);
+				var combo = panel.down("form").getForm().findField(name);
 				combo.reset();
 				combo.getStore().clearFilter();
 			}
 		};
 	},
 	level2combo : function(name) {
+		var panel = this;
 		return {
 			expand : function() {
-				var form = Ext.getCmp("record-form").getForm();
-				var type = form.findField(name).getValue();
+				var type = panel.down("form").getForm().findField(name)
+						.getValue();
 				if (type)
 					this.getStore().filter("type", type);
 				else
@@ -176,58 +177,59 @@ Ext.define("wallet.record", {
 			}
 		};
 	},
-	query : function() {
-		var params = Ext.getCmp("record-form").getForm().getValues();
-		if (params.startDate
-				&& params.endDate
-				&& Ext.Date.parse(params.startDate, "Y-m-d") > Ext.Date.parse(
-						params.endDate, "Y-m-d")) {
-			Ext.Msg.alert("提示", "时间范围设置不正确");
-			return;
-		}
-		if (params.minAmount && params.maxAmount
-				&& params.minAmount >= params.maxAmount) {
-			Ext.Msg.alert("提示", "金额范围设置不正确");
-			return;
-		}
-		var store = Ext.data.StoreManager.lookup("records");
-		store.proxy.extraParams = params;
-		store.loadPage(1);
+	doQuery : function() {
+		var panel = this;
+		return function() {
+			var params = panel.down("form").getForm().getValues();
+			if (params.startDate
+					&& params.endDate
+					&& Ext.Date.parse(params.startDate, "Y-m-d") > Ext.Date
+							.parse(params.endDate, "Y-m-d")) {
+				Ext.Msg.alert("提示", "时间范围设置不正确");
+				return;
+			}
+			if (params.minAmount && params.maxAmount
+					&& params.minAmount >= params.maxAmount) {
+				Ext.Msg.alert("提示", "金额范围设置不正确");
+				return;
+			}
+			panel.store.proxy.extraParams = params;
+			panel.store.loadPage(1);
+		};
 	},
 	queryWeek : function() {
-		var obj = this;
+		var panel = this;
 		return function() {
 			var day = util.date(new Date(), "N");
 			var monday = util.addDays(new Date(), 1 - day);
 			var sunday = util.addDays(new Date(), 7 - day);
-			var form = Ext.getCmp("record-form").getForm();
+			var form = panel.down("form").getForm();
 			form.findField("startDate").setValue(monday);
 			form.findField("endDate").setValue(sunday);
-			obj.query();
+			panel.doQuery()();
 		};
 	},
 	queryMonth : function() {
-		var obj = this;
+		var panel = this;
 		return function() {
 			var first = Ext.Date.getFirstDateOfMonth(new Date());
 			var last = Ext.Date.getLastDateOfMonth(new Date());
-			var form = Ext.getCmp("record-form").getForm();
+			var form = panel.down("form").getForm();
 			form.findField("startDate").setValue(first);
 			form.findField("endDate").setValue(last);
-			obj.query();
+			panel.doQuery()();
 		};
 	},
 	reset : function() {
-		var obj = this;
+		var panel = this;
 		return function() {
-			Ext.getCmp("record-form").getForm().reset();
-			obj.query();
+			panel.down("form").getForm().reset();
+			panel.doQuery()();
 		};
 	},
 
 	initGrid : function() {
-		var store = util.store({
-			storeId : "records",
+		this.store = util.store({
 			model : "model.record",
 			url : "/record/query",
 			load : function() {
@@ -251,13 +253,16 @@ Ext.define("wallet.record", {
 								+ util.currency(transfer) + "</span>");
 			}
 		});
-		return Ext.create("Ext.grid.Panel", {
+		return {
 			region : "center",
 			margin : "3",
+			xtype : "grid",
 			loadMask : true,
 			forceFit : true,
-			store : store,
-			columns : [ Ext.create('Ext.grid.RowNumberer'), {
+			store : this.store,
+			columns : [ {
+				xtype : "rownumberer"
+			}, {
 				text : "发生时间",
 				dataIndex : "occurTime",
 				width : 120,
@@ -305,10 +310,22 @@ Ext.define("wallet.record", {
 				menuDisabled : true,
 				renderer : util.object
 			} ],
-			bbar : Ext.create("Ext.PagingToolbar", {
-				store : store,
+			bbar : {
+				xtype : "pagingtoolbar",
+				store : this.store,
 				displayInfo : true,
 				items : [ "-", {
+					text : "修改",
+					iconCls : "icon-update",
+					id : "updateBtn",
+					disabled : true
+				}, "-", {
+					text : "删除",
+					iconCls : "icon-remove",
+					id : "removeBtn",
+					disabled : true,
+					handler : this.remove()
+				}, "-", {
 					xtype : "tbtext",
 					id : "record-outlay-sum",
 					text : "支出：<span class='negative'>￥0.00</span>"
@@ -321,7 +338,38 @@ Ext.define("wallet.record", {
 					id : "record-transfer-sum",
 					text : "转账：<span class='statistics'>￥0.00</span>"
 				} ]
-			})
-		});
+			},
+			listeners : {
+				selectionchange : function() {
+					var sm = this.getSelectionModel();
+					this.down("#updateBtn").setDisabled(sm.getCount() != 1);
+					this.down("#removeBtn").setDisabled(sm.getCount() != 1);
+				}
+			}
+		};
+	},
+	remove : function() {
+		var panel = this;
+		return function() {
+			Ext.Msg.confirm("确认", "是否需要删除该记录", function(result) {
+				if (result != "yes")
+					return;
+				var record = panel.down("grid").getSelectionModel()
+						.getSelection()[0];
+				Ext.Ajax.request({
+					url : "/record/remove",
+					params : {
+						id : record.getId()
+					},
+					success : function(response) {
+						var json = Ext.JSON.decode(response.responseText);
+						if (json.success)
+							panel.store.load();
+						else
+							Ext.Msg.alert("提示", json.message);
+					}
+				});
+			});
+		};
 	}
 });

@@ -25,4 +25,12 @@ public class CategoryService {
 		return dao.byType(CategoryType.收入);
 	}
 
+	public List<Category> outlay() {
+		return dao.byType(CategoryType.支出);
+	}
+
+	public List<Category> transfer() {
+		return dao.byType(CategoryType.转账);
+	}
+
 }
