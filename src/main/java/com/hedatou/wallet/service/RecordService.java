@@ -48,32 +48,31 @@ public class RecordService {
 
 	@Transactional
 	public void save(Record record) {
-		Category category = record.getCategory();
-		categoryDao.refresh(category);
+		Category category = categoryDao.get(record.getCategory().getId());
+		record.setCategory(category);
 		category.setLastUpdate(new Date());
 		category.setTotal(category.getTotal().add(record.getAmount()));
-
 		if (record instanceof IncomeRecord) {
 			IncomeRecord income = (IncomeRecord) record;
-			Account account = income.getIncomeAccount();
-			accountDao.refresh(account);
+			Account account = accountDao.get(income.getIncomeAccount().getId());
+			income.setIncomeAccount(account);
 			account.setLastUpdate(new Date());
 			account.setBalance(account.getBalance().add(income.getAmount()));
 		} else if (record instanceof OutlayRecord) {
 			OutlayRecord outlay = (OutlayRecord) record;
-			Account account = outlay.getOutlayAccount();
-			accountDao.refresh(account);
+			Account account = accountDao.get(outlay.getOutlayAccount().getId());
+			outlay.setOutlayAccount(account);
 			account.setLastUpdate(new Date());
 			account.setBalance(account.getBalance()
 					.subtract(outlay.getAmount()));
 		} else if (record instanceof TransferRecord) {
 			TransferRecord transfer = (TransferRecord) record;
-			Account from = transfer.getFromAccount();
-			accountDao.refresh(from);
+			Account from = accountDao.get(transfer.getFromAccount().getId());
+			transfer.setFromAccount(from);
 			from.setLastUpdate(new Date());
 			from.setBalance(from.getBalance().subtract(transfer.getAmount()));
-			Account to = transfer.getToAccount();
-			accountDao.refresh(to);
+			Account to = accountDao.get(transfer.getToAccount().getId());
+			transfer.setToAccount(to);
 			to.setLastUpdate(new Date());
 			to.setBalance(to.getBalance().add(transfer.getAmount()));
 		}
@@ -86,7 +85,6 @@ public class RecordService {
 		Category category = record.getCategory();
 		category.setLastUpdate(new Date());
 		category.setTotal(category.getTotal().subtract(record.getAmount()));
-
 		if (record instanceof IncomeRecord) {
 			IncomeRecord income = (IncomeRecord) record;
 			Account account = income.getIncomeAccount();
@@ -108,6 +106,66 @@ public class RecordService {
 			to.setBalance(to.getBalance().subtract(transfer.getAmount()));
 		}
 		dao.delete(record);
+	}
+
+	@Transactional
+	public void update(Record record) {
+		Record old = dao.get(record.getId());
+		Category oldc = old.getCategory(), newc = categoryDao.get(record
+				.getCategory().getId());
+		record.setCategory(newc);
+		if (!oldc.equals(newc)
+				|| old.getAmount().compareTo(record.getAmount()) != 0) {
+			oldc.setLastUpdate(new Date());
+			oldc.setTotal(oldc.getTotal().subtract(record.getAmount()));
+			newc.setLastUpdate(new Date());
+			newc.setTotal(newc.getTotal().add(record.getAmount()));
+		}
+		if (record instanceof IncomeRecord) {
+			Account oldi = ((IncomeRecord) old).getIncomeAccount(), newi = accountDao
+					.get(((IncomeRecord) record).getIncomeAccount().getId());
+			((IncomeRecord) record).setIncomeAccount(newi);
+			if (!oldi.equals(newi)
+					|| old.getAmount().compareTo(record.getAmount()) != 0) {
+				oldi.setLastUpdate(new Date());
+				oldi.setBalance(oldi.getBalance().subtract(old.getAmount()));
+				newi.setLastUpdate(new Date());
+				newi.setBalance(newi.getBalance().add(record.getAmount()));
+			}
+		} else if (record instanceof OutlayRecord) {
+			Account oldo = ((OutlayRecord) old).getOutlayAccount(), newo = accountDao
+					.get(((OutlayRecord) record).getOutlayAccount().getId());
+			((OutlayRecord) record).setOutlayAccount(newo);
+			if (!oldo.equals(newo)
+					|| old.getAmount().compareTo(record.getAmount()) != 0) {
+				oldo.setLastUpdate(new Date());
+				oldo.setBalance(oldo.getBalance().add(old.getAmount()));
+				newo.setLastUpdate(new Date());
+				newo.setBalance(newo.getBalance().subtract(record.getAmount()));
+			}
+		} else if (record instanceof TransferRecord) {
+			Account oldf = ((TransferRecord) old).getFromAccount(), newf = accountDao
+					.get(((TransferRecord) record).getFromAccount().getId());
+			((TransferRecord) record).setFromAccount(newf);
+			Account oldt = ((TransferRecord) old).getToAccount(), newt = accountDao
+					.get(((TransferRecord) record).getToAccount().getId());
+			((TransferRecord) record).setToAccount(newt);
+			if (!oldf.equals(newf)
+					|| old.getAmount().compareTo(record.getAmount()) != 0) {
+				oldf.setLastUpdate(new Date());
+				oldf.setBalance(oldf.getBalance().add(old.getAmount()));
+				newf.setLastUpdate(new Date());
+				newf.setBalance(newf.getBalance().subtract(record.getAmount()));
+			}
+			if (!oldt.equals(newt)
+					|| old.getAmount().compareTo(record.getAmount()) != 0) {
+				oldt.setLastUpdate(new Date());
+				oldt.setBalance(oldt.getBalance().subtract(old.getAmount()));
+				newt.setLastUpdate(new Date());
+				newt.setBalance(newt.getBalance().add(record.getAmount()));
+			}
+		}
+		dao.merge(record);
 	}
 
 }

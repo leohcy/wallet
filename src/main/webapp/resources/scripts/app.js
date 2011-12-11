@@ -113,7 +113,7 @@ Ext.define("wallet.app", {
 			tabs.setActiveTab(tab);
 		};
 	},
-	showDialog : function(title, widget) {
+	showDialog : function(title, widget, callback, params) {
 		return function() {
 			Ext.create("Ext.window.Window", {
 				title : title,
@@ -123,7 +123,12 @@ Ext.define("wallet.app", {
 				resizable : false,
 				constrain : true,
 				layout : "fit",
-				items : Ext.create(widget)
+				items : Ext.create(widget, {
+					params : params || null
+				}),
+				listeners : {
+					destroy : callback || Ext.emptyFn
+				}
 			}).show();
 		};
 	}

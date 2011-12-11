@@ -66,7 +66,7 @@ Ext.onReady(function() {
         	wallet: "/resources/scripts"
        	}
     });
-	Ext.create("wallet.app");
+	window.app = Ext.create("wallet.app");
 	Ext.fly("loading").animate({ opacity:0, remove:true, duration:800 });
     Ext.fly("loading-mask").animate({ opacity:0, remove:true, duration:400 });
 });

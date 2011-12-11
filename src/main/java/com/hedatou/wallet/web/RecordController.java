@@ -46,22 +46,22 @@ public class RecordController extends ControllerSupport {
 		return view;
 	}
 
-	@RequestMapping(value = "income")
-	public View income(@Valid IncomeRecord record, BindingResult binding,
+	@RequestMapping(value = "save/income")
+	public View save(@Valid IncomeRecord record, BindingResult binding,
 			Model model) {
-		return save(record, binding, model);
+		return _save(record, binding, model);
 	}
 
-	@RequestMapping(value = "outlay")
-	public View outlay(@Valid OutlayRecord record, BindingResult binding,
+	@RequestMapping(value = "save/outlay")
+	public View save(@Valid OutlayRecord record, BindingResult binding,
 			Model model) {
-		return save(record, binding, model);
+		return _save(record, binding, model);
 	}
 
-	@RequestMapping(value = "transfer")
-	public View transfer(@Valid TransferRecord record, BindingResult binding,
+	@RequestMapping(value = "save/transfer")
+	public View save(@Valid TransferRecord record, BindingResult binding,
 			Model model) {
-		return save(record, binding, model);
+		return _save(record, binding, model);
 	}
 
 	@RequestMapping(value = "remove")
@@ -71,10 +71,36 @@ public class RecordController extends ControllerSupport {
 		return view;
 	}
 
-	private View save(Record record, BindingResult binding, Model model) {
+	@RequestMapping(value = "update/income")
+	public View update(@Valid IncomeRecord record, BindingResult binding,
+			Model model) {
+		return _update(record, binding, model);
+	}
+
+	@RequestMapping(value = "update/outlay")
+	public View update(@Valid OutlayRecord record, BindingResult binding,
+			Model model) {
+		return _update(record, binding, model);
+	}
+
+	@RequestMapping(value = "update/transfer")
+	public View update(@Valid TransferRecord record, BindingResult binding,
+			Model model) {
+		return _update(record, binding, model);
+	}
+
+	private View _save(Record record, BindingResult binding, Model model) {
 		if (binding.hasErrors())
 			return handleBindingError(binding, model);
 		service.save(record);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	private View _update(Record record, BindingResult binding, Model model) {
+		if (binding.hasErrors())
+			return handleBindingError(binding, model);
+		service.update(record);
 		model.addAttribute("success", true);
 		return view;
 	}

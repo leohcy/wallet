@@ -7,10 +7,15 @@ Ext.define("wallet.income", {
 			model : "model.category",
 			url : "/category/income",
 			load : function() {
-				var idx = this.findExact("defaults", true);
-				if (idx != -1) {
-					var model = this.getAt(idx);
-					form.getForm().findField("category.id").select(model);
+				if (form.params) {
+					form.getForm().findField("category.id").select(
+							form.params.category);
+				} else {
+					var idx = this.findExact("defaults", true);
+					if (idx != -1) {
+						var model = this.getAt(idx);
+						form.getForm().findField("category.id").select(model);
+					}
 				}
 			}
 		});
@@ -18,10 +23,16 @@ Ext.define("wallet.income", {
 			model : "model.account",
 			url : "/account/sorted",
 			load : function() {
-				var idx = this.findExact("defaultIncome", true);
-				if (idx != -1) {
-					var model = this.getAt(idx);
-					form.getForm().findField("incomeAccount.id").select(model);
+				if (form.params) {
+					form.getForm().findField("incomeAccount.id").select(
+							form.params.incomeAccount);
+				} else {
+					var idx = this.findExact("defaultIncome", true);
+					if (idx != -1) {
+						var model = this.getAt(idx);
+						form.getForm().findField("incomeAccount.id").select(
+								model);
+					}
 				}
 			}
 		});
@@ -98,17 +109,34 @@ Ext.define("wallet.income", {
 			} ]
 		});
 		this.callParent(arguments);
+		this.initUpdateParams();
+	},
+	initUpdateParams : function() {
+		if (!this.params)
+			return;
+		var occurTime = new Date(this.params.occurTime);
+		this.getForm().findField("date").setValue(occurTime);
+		this.getForm().findField("time").setValue(occurTime);
+		this.getForm().findField("amount").setValue(this.params.amount);
+		this.getForm().findField("description").setValue(
+				this.params.description);
 	},
 	confirm : function() {
 		var panel = this;
 		return function() {
 			var form = panel.getForm();
 			if (form.isValid()) {
+				var url = "/record/save/income";
 				var params = form.getValues();
 				params.occurTime = params.date + " " + params.time + ":00";
+				if (panel.params) {
+					url = "/record/update/income";
+					params.id = panel.params.id;
+					params.version = panel.params.version;
+				}
 				form.submit({
 					clientValidation : false,
-					url : "/record/income",
+					url : url,
 					params : params,
 					waitTitle : "提示",
 					waitMsg : "保存中...",
@@ -116,7 +144,9 @@ Ext.define("wallet.income", {
 						panel.close()();
 					},
 					failure : function(form, action) {
-						if (!action.result.errors)
+						if (action.failureType != "server")
+							Ext.Msg.alert("提示", "发生错误");
+						else if (!action.result.errors)
 							Ext.Msg.alert("提示", action.result.message);
 					}
 				});

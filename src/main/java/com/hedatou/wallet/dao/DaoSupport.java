@@ -157,12 +157,12 @@ public abstract class DaoSupport<T> {
 		return (T) session().get(domain, id);
 	}
 
-	public void refresh(T domain) {
-		session().refresh(domain);
-	}
-
 	public void save(T domain) {
 		session().saveOrUpdate(domain);
+	}
+
+	public void merge(T domain) {
+		session().merge(domain);
 	}
 
 	public void delete(T domain) {

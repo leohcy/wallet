@@ -318,7 +318,8 @@ Ext.define("wallet.record", {
 					text : "修改",
 					iconCls : "icon-update",
 					id : "updateBtn",
-					disabled : true
+					disabled : true,
+					handler : this.update()
 				}, "-", {
 					text : "删除",
 					iconCls : "icon-remove",
@@ -348,12 +349,46 @@ Ext.define("wallet.record", {
 			}
 		};
 	},
+	update : function() {
+		var panel = this;
+		return function() {
+			var grid = panel.down("grid");
+			var record = grid.getSelectionModel().getSelection()[0];
+			var callback = function() {
+				panel.store.load();
+			};
+			var o = {
+				id : record.getId(),
+				version : record.get("version"),
+				occurTime : record.get("occurTime"),
+				amount : record.get("amount"),
+				category : record.get("category").id,
+				description : record.get("description")
+			};
+			var type = record.get("category").type;
+			if (type == "收入") {
+				o.incomeAccount = record.get("incomeAccount").id;
+				window.app.showDialog("收入", "wallet.income", callback, o)();
+			} else if (type == "支出") {
+				o.outlayAccount = record.get("outlayAccount").id;
+				window.app.showDialog("支出", "wallet.outlay", callback, o)();
+			} else if (type == "转账") {
+				o.fromAccount = record.get("fromAccount").id;
+				o.toAccount = record.get("toAccount").id;
+				window.app.showDialog("转账", "wallet.transfer", callback, o)();
+			}
+		};
+	},
 	remove : function() {
 		var panel = this;
 		return function() {
 			Ext.Msg.confirm("确认", "是否需要删除该记录", function(result) {
 				if (result != "yes")
 					return;
+				var mask = new Ext.LoadMask(Ext.getBody(), {
+					msg : "删除中..."
+				});
+				mask.show();
 				var record = panel.down("grid").getSelectionModel()
 						.getSelection()[0];
 				Ext.Ajax.request({
@@ -361,12 +396,17 @@ Ext.define("wallet.record", {
 					params : {
 						id : record.getId()
 					},
-					success : function(response) {
-						var json = Ext.JSON.decode(response.responseText);
-						if (json.success)
-							panel.store.load();
-						else
-							Ext.Msg.alert("提示", json.message);
+					callback : function(opt, success, response) {
+						mask.destroy();
+						if (success) {
+							var json = Ext.JSON.decode(response.responseText);
+							if (json.success)
+								panel.store.load();
+							else
+								Ext.Msg.alert("提示", json.message);
+						} else {
+							Ext.Msg.alert("提示", "发生错误");
+						}
 					}
 				});
 			});
