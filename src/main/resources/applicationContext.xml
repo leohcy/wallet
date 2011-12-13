@@ -33,6 +33,10 @@
 		<property name="maxPoolSize" value="${maxPool}" />
 	</bean>
 	
+	<bean class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan" value="com.hedatou.wallet.domain" />
