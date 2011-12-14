@@ -5,15 +5,15 @@ import java.util.regex.Pattern;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class DatabaseDao {
 
 	@Autowired
-	private SimpleJdbcTemplate jdbc;
+	private JdbcTemplate jdbc;
 
 	public String backup() {
 		StringBuffer sb = new StringBuffer();

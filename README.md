@@ -7,8 +7,8 @@
 -------
 
 * Ext JS 4.0.7 前端JavaScript UI框架
-* spring-framework 3.0.6.RELEASE 各层组件粘合剂
-* spring-mvc 3.0.6.RELEASE Web MVC框架
+* spring-framework 3.1.0.RELEASE 各层组件粘合剂
+* spring-mvc 3.1.0.RELEASE Web MVC框架
 * hibernate 3.6.8.Final ORM框架
 * ehcache 2.5.0 二级缓存、查询缓存
 * h2database 1.3.162 嵌入式数据库
