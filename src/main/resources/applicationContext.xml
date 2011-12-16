@@ -37,7 +37,7 @@
 		<constructor-arg ref="dataSource" />
 	</bean>
 	
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan" value="com.hedatou.wallet.domain" />
 		<property name="hibernateProperties">
@@ -47,15 +47,16 @@
 				hibernate.generate_statistics=${statistics}
 				hibernate.hbm2ddl.auto=update
 				hibernate.cache.use_query_cache=true
-				hibernate.cache.region.factory_class=net.sf.ehcache.hibernate.EhCacheRegionFactory
+				hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.EhCacheRegionFactory
 			</value>
 		</property>
 	</bean>
 	
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory" />
 	<tx:annotation-driven />
 	
+	<bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator" />
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"

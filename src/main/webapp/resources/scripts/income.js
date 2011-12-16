@@ -100,12 +100,12 @@ Ext.define("wallet.income", {
 				text : "确认",
 				iconCls : "icon-confirm",
 				scale : "medium",
-				handler : this.confirm()
+				handler : this.confirm.delegate(this)
 			}, {
 				text : "取消",
 				iconCls : "icon-cancel",
 				scale : "medium",
-				handler : this.close()
+				handler : this.close.delegate(this)
 			} ]
 		});
 		this.callParent(arguments);
@@ -121,42 +121,36 @@ Ext.define("wallet.income", {
 		this.getForm().findField("description").setValue(
 				this.params.description);
 	},
-	confirm : function() {
-		var panel = this;
-		return function() {
-			var form = panel.getForm();
-			if (form.isValid()) {
-				var url = "/record/save/income";
-				var params = form.getValues();
-				params.occurTime = params.date + " " + params.time + ":00";
-				if (panel.params) {
-					url = "/record/update/income";
-					params.id = panel.params.id;
-					params.version = panel.params.version;
-				}
-				form.submit({
-					clientValidation : false,
-					url : url,
-					params : params,
-					waitTitle : "提示",
-					waitMsg : "保存中...",
-					success : function(form, action) {
-						panel.close()();
-					},
-					failure : function(form, action) {
-						if (action.failureType != "server")
-							Ext.Msg.alert("提示", "发生错误");
-						else if (!action.result.errors)
-							Ext.Msg.alert("提示", action.result.message);
-					}
-				});
+	confirm : function(panel) {
+		var form = panel.getForm();
+		if (form.isValid()) {
+			var url = "/record/save/income";
+			var params = form.getValues();
+			params.occurTime = params.date + " " + params.time + ":00";
+			if (panel.params) {
+				url = "/record/update/income";
+				params.id = panel.params.id;
+				params.version = panel.params.version;
 			}
-		};
+			form.submit({
+				clientValidation : false,
+				url : url,
+				params : params,
+				waitTitle : "提示",
+				waitMsg : "保存中...",
+				success : function(form, action) {
+					panel.close(panel);
+				},
+				failure : function(form, action) {
+					if (action.failureType != "server")
+						Ext.Msg.alert("提示", "发生错误");
+					else if (!action.result.errors)
+						Ext.Msg.alert("提示", action.result.message);
+				}
+			});
+		}
 	},
-	close : function() {
-		var panel = this;
-		return function() {
-			panel.ownerCt.close();
-		};
+	close : function(panel) {
+		panel.ownerCt.close();
 	}
 });

@@ -33,8 +33,8 @@ Ext.onReady(function(){
        Ext.grid.Panel.prototype.ddText = "选择了 {0} 行";
     }
 
-    if(Ext.TabPanelItem){
-       Ext.TabPanelItem.prototype.closeText = "关闭此标签";
+    if(Ext.tab.Tab){
+    	Ext.tab.Tab.prototype.closeText = "关闭此标签";
     }
 
     if(Ext.form.field.Base){
@@ -102,7 +102,8 @@ Ext.onReady(function(){
 
     if(Ext.picker.Date){
        Ext.apply(Ext.picker.Date.prototype, {
-          todayText         : "今天",
+    	  ariaTitle			: "",
+    	  todayText         : "今天",
           minText           : "日期必须大于最小允许日期",//update
           maxText           : "日期必须小于最大允许日期",//update
           disabledDaysText  : "",
@@ -111,7 +112,7 @@ Ext.onReady(function(){
           dayNames          : Ext.Date.dayNames,
           nextText          : '下个月 (Ctrl+Right)',
           prevText          : '上个月 (Ctrl+Left)',
-          monthYearText     : '选择一个月 (Control+Up/Down 来改变年份)',//update
+          monthYearText     : '选择一个月 (Ctrl+Up/Down 来改变年份)',//update
           todayTip          : "{0} (空格键选择)",
           format            : "y年m月d日"
        });

@@ -44,45 +44,45 @@ Ext.define("wallet.app", {
 					items : [ {
 						text : "收&nbsp;&nbsp;入",
 						iconCls : "icon-income",
-						handler : this.showDialog("收入", "wallet.income")
+						handler : this.dialog.delegate("收入", "wallet.income")
 					}, {
 						text : "支&nbsp;&nbsp;出",
 						iconCls : "icon-outlay",
-						handler : this.showDialog("支出", "wallet.outlay")
+						handler : this.dialog.delegate("支出", "wallet.outlay")
 					}, {
 						text : "转&nbsp;&nbsp;账",
 						iconCls : "icon-transfer",
-						handler : this.showDialog("转账", "wallet.transfer")
+						handler : this.dialog.delegate("转账", "wallet.transfer")
 					}, {
 						text : "收支记录",
 						iconCls : "icon-record",
-						handler : this.menuHandler("wallet.record")
+						handler : this.tabs.delegate(this, "wallet.record")
 					} ]
 				}, {
 					title : "统 计",
 					items : [ {
 						text : "周&nbsp;统&nbsp;计",
 						iconCls : "icon-week-stats",
-						handler : this.menuHandler("wallet.week")
+						handler : this.tabs.delegate(this, "wallet.week")
 					}, {
 						text : "月&nbsp;统&nbsp;计",
 						iconCls : "icon-month-stats",
-						handler : this.menuHandler("wallet.month")
+						handler : this.tabs.delegate(this, "wallet.month")
 					}, {
 						text : "资产统计",
 						iconCls : "icon-asset-stats",
-						handler : this.menuHandler("wallet.asset")
+						handler : this.tabs.delegate(this, "wallet.asset")
 					} ]
 				}, {
 					title : "管 理",
 					items : [ {
 						text : "账户管理",
 						iconCls : "icon-account",
-						handler : this.menuHandler("wallet.account")
+						handler : this.tabs.delegate(this, "wallet.account")
 					}, {
 						text : "分类管理",
 						iconCls : "icon-category",
-						handler : this.menuHandler("wallet.category")
+						handler : this.tabs.delegate(this, "wallet.category")
 					}, {
 						text : "数据管理",
 						iconCls : "icon-database",
@@ -96,40 +96,35 @@ Ext.define("wallet.app", {
 		this.callParent(arguments);
 	},
 
-	menuHandler : function(widget) {
-		var app = this;
-		return function() {
-			var tabs = app.down("tabpanel");
-			var id = widget + "-panel";
-			var tab = Ext.getCmp(id);
-			if (!tab) {
-				tab = Ext.create(widget, {
-					id : id,
-					iconCls : this.iconCls,
-					closable : true
-				});
-				tabs.add(tab);
-			}
-			tabs.setActiveTab(tab);
-		};
+	tabs : function(app, widget) {
+		var tabs = app.down("tabpanel");
+		var id = widget + "-panel";
+		var tab = Ext.getCmp(id);
+		if (!tab) {
+			tab = Ext.create(widget, {
+				id : id,
+				iconCls : this.iconCls,
+				closable : true
+			});
+			tabs.add(tab);
+		}
+		tabs.setActiveTab(tab);
 	},
-	showDialog : function(title, widget, callback, params) {
-		return function() {
-			Ext.create("Ext.window.Window", {
-				title : title,
-				width : 480,
-				height : 320,
-				modal : true,
-				resizable : false,
-				constrain : true,
-				layout : "fit",
-				items : Ext.create(widget, {
-					params : params || null
-				}),
-				listeners : {
-					destroy : callback || Ext.emptyFn
-				}
-			}).show();
-		};
+	dialog : function(title, widget, callback, params) {
+		Ext.create("Ext.window.Window", {
+			title : title,
+			width : 480,
+			height : 320,
+			modal : true,
+			resizable : false,
+			constrain : true,
+			layout : "fit",
+			items : Ext.create(widget, {
+				params : params || null
+			}),
+			listeners : {
+				destroy : callback || Ext.emptyFn
+			}
+		}).show();
 	}
 });

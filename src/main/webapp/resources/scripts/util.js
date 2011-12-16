@@ -161,6 +161,13 @@ Ext.define("wallet.util", {
 });
 window.util = Ext.create("wallet.util");
 
+Function.prototype.delegate = function() {
+	var func = this, args = arguments;
+	return function() {
+		func.apply(this, args);
+	};
+};
+
 Ext.define("model.account", {
 	extend : "Ext.data.Model",
 	fields : [ "id", "name", "type", "balance", "defaultIncome",

@@ -133,35 +133,43 @@ Ext.define("wallet.account", {
 					xtype : "checkbox"
 				}
 			} ],
-			tbar : [ {
-				text : "刷新",
-				iconCls : "icon-reload",
-				handler : function() {
-					store.load();
-				}
-			}, "-", {
-				text : "设为默认收入",
-				iconCls : "icon-income",
-				id : "incomeBtn",
-				disabled : true,
-				handler : this.setup("/account/setIncome", store)
-			}, {
-				text : "设为默认支出",
-				iconCls : "icon-outlay",
-				id : "outlayBtn",
-				disabled : true,
-				handler : this.setup("/account/setOutlay", store)
-			}, {
-				text : "显示/隐藏",
-				iconCls : "icon-show-hide",
-				id : "displayBtn",
-				disabled : true,
-				handler : this.setup("/account/switchDisplay", store)
-			}, "->", {
-				xtype : "tbtext",
-				id : "account-sum",
-				text : "总资产：<span class='statistics'>￥0.00</span>"
-			} ],
+			tbar : [
+					{
+						text : "刷新",
+						iconCls : "icon-reload",
+						handler : function() {
+							store.load();
+						}
+					},
+					"-",
+					{
+						text : "设为默认收入",
+						iconCls : "icon-income",
+						id : "incomeBtn",
+						disabled : true,
+						handler : this.setup.delegate(this, store,
+								"/account/setIncome")
+					},
+					{
+						text : "设为默认支出",
+						iconCls : "icon-outlay",
+						id : "outlayBtn",
+						disabled : true,
+						handler : this.setup.delegate(this, store,
+								"/account/setOutlay")
+					},
+					{
+						text : "显示/隐藏",
+						iconCls : "icon-show-hide",
+						id : "displayBtn",
+						disabled : true,
+						handler : this.setup.delegate(this, store,
+								"/account/switchDisplay")
+					}, "->", {
+						xtype : "tbtext",
+						id : "account-sum",
+						text : "总资产：<span class='statistics'>￥0.00</span>"
+					} ],
 			listeners : {
 				selectionchange : function() {
 					var sm = this.getSelectionModel();
@@ -176,34 +184,31 @@ Ext.define("wallet.account", {
 			}
 		};
 	},
-	setup : function(url, store) {
-		var panel = this;
-		return function() {
-			var mask = new Ext.LoadMask(Ext.getBody(), {
-				msg : "设置中..."
-			});
-			mask.show();
-			var grid = panel.down("grid");
-			var record = grid.getSelectionModel().getSelection()[0];
-			Ext.Ajax.request({
-				url : url,
-				params : {
-					id : record.getId()
-				},
-				callback : function(opt, success, response) {
-					mask.destroy();
-					if (success) {
-						var json = Ext.JSON.decode(response.responseText);
-						if (json.success)
-							store.load();
-						else
-							Ext.Msg.alert("提示", json.message);
-					} else {
-						Ext.Msg.alert("提示", "发生错误");
-					}
+	setup : function(panel, store, url) {
+		var mask = new Ext.LoadMask(Ext.getBody(), {
+			msg : "设置中..."
+		});
+		mask.show();
+		var grid = panel.down("grid");
+		var record = grid.getSelectionModel().getSelection()[0];
+		Ext.Ajax.request({
+			url : url,
+			params : {
+				id : record.getId()
+			},
+			callback : function(opt, success, response) {
+				mask.destroy();
+				if (success) {
+					var json = Ext.JSON.decode(response.responseText);
+					if (json.success)
+						store.load();
+					else
+						Ext.Msg.alert("提示", json.message);
+				} else {
+					Ext.Msg.alert("提示", "发生错误");
 				}
-			});
-		};
+			}
+		});
 	},
 
 	initChart : function(store) {
