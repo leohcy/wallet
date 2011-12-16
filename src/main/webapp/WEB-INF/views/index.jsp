@@ -41,6 +41,7 @@
 .icon-cancel { background-image:url(/resources/images/cross.png) !important; }
 .icon-update { background-image:url(/resources/images/calculator_edit.png) !important; }
 .icon-remove { background-image:url(/resources/images/calculator_delete.png) !important; }
+.icon-show-hide { background-image:url(/resources/images/eye.png) !important; }
 </style>
 	</head>
 	<body>

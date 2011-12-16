@@ -17,17 +17,26 @@ public class DatabaseController extends ControllerSupport {
 	@Autowired
 	private DatabaseService service;
 
-	@RequestMapping("backup")
-	public ResponseEntity<String> backup() {
-		String filename = String.format("backup_%s.sql", DateTime.now()
-				.toString("YYYYMMddHHmm"));
-		String backup = service.backup();
+	@RequestMapping("dbscript")
+	public ResponseEntity<String> dbscript() {
+		String dbscript = service.dbscript();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/octet-stream; charset=utf-8");
-		headers.set("Content-Disposition",
-				String.format("attachment; filename=\"%s\"", filename));
-		headers.setContentDispositionFormData("download", filename);
-		return new ResponseEntity<String>(backup, headers, HttpStatus.OK);
+		headers.set("Content-Disposition", String.format(
+				"attachment; filename=\"dbscript_%s.sql\"", DateTime.now()
+						.toString("YYYYMMddHHmm")));
+		return new ResponseEntity<String>(dbscript, headers, HttpStatus.OK);
+	}
+
+	@RequestMapping("backup")
+	public ResponseEntity<byte[]> backup() {
+		byte[] backup = service.backup();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/octet-stream");
+		headers.set("Content-Disposition", String.format(
+				"attachment; filename=\"backup_%s.zip\"", DateTime.now()
+						.toString("YYYYMMddHHmm")));
+		return new ResponseEntity<byte[]>(backup, headers, HttpStatus.OK);
 	}
 
 }

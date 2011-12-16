@@ -22,8 +22,7 @@ public class PagingParamsResolver implements WebArgumentResolver {
 			pagingParams.setLimit(Integer.parseInt(limit));
 			return pagingParams;
 		} catch (Exception e) {
-			throw new MessageSourceException("paging.params.not.found",
-					"无法获取分页信息", e);
+			throw new MessageSourceException("paging.params.not.found", e);
 		}
 	}
 

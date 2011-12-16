@@ -44,6 +44,10 @@ Ext.onReady(function(){
     if (Ext.LoadMask) {
         Ext.LoadMask.prototype.msg = "读取中...";
     }
+    
+    if (Ext.view.AbstractView) {
+    	Ext.view.AbstractView.prototype.loadingText = "读取中...";
+    }
 
     if(Ext.Date){
         Ext.Date.monthNames = [
@@ -268,6 +272,15 @@ Ext.onReady(function(){
           unlockText   : "解除锁定",//update
           columnsText  : "列"
        });
+    }
+    
+    if(Ext.grid.RowEditor){
+    	Ext.apply(Ext.grid.RowEditor.prototype, {
+    		saveBtnText  : "保存",
+    		cancelBtnText : "取消",
+    		errorsText: "错误",
+    		dirtyText: "请保存或取消之前的修改"
+    	});
     }
 
     if(Ext.grid.PropertyColumnModel){

@@ -29,4 +29,25 @@ public class AccountController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("switchDisplay")
+	public View switchDisplay(long id, Model model) {
+		service.switchDisplay(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	@RequestMapping("setIncome")
+	public View setIncome(long id, Model model) {
+		service.setIncome(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	@RequestMapping("setOutlay")
+	public View setOutlay(long id, Model model) {
+		service.setOutlay(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
 }

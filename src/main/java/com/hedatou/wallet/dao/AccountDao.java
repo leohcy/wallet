@@ -18,4 +18,12 @@ public class AccountDao extends DaoSupport<Account> {
 		return query("from Account a order by a.orderNo", false);
 	}
 
+	public Account defaultIncome() {
+		return unique("from Account a where a.defaultIncome=true");
+	}
+
+	public Account defaultOutlay() {
+		return unique("from Account a where a.defaultOutlay=true");
+	}
+
 }

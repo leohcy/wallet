@@ -24,4 +24,30 @@ public class AccountService {
 		return dao.sorted();
 	}
 
+	@Transactional
+	public void switchDisplay(long id) {
+		Account account = dao.get(id);
+		account.setDisplay(!account.getDisplay());
+	}
+
+	@Transactional
+	public void setIncome(long id) {
+		Account oldDefault = dao.defaultIncome();
+		if (oldDefault != null)
+			oldDefault.setDefaultIncome(false);
+		Account newDefault = dao.get(id);
+		if (newDefault != null)
+			newDefault.setDefaultIncome(true);
+	}
+
+	@Transactional
+	public void setOutlay(long id) {
+		Account oldDefault = dao.defaultOutlay();
+		if (oldDefault != null)
+			oldDefault.setDefaultOutlay(false);
+		Account newDefault = dao.get(id);
+		if (newDefault != null)
+			newDefault.setDefaultOutlay(true);
+	}
+
 }

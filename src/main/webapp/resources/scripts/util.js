@@ -34,6 +34,12 @@ Ext.define("wallet.util", {
 			content = "<span class='statistics'>" + content + "</span>";
 		return content;
 	},
+	status : function(value) {
+		if (!value)
+			return "";
+		return "<img src='" + "/resources/images/accept.png"
+				+ "' alt='' style='width:14px; height:14px;' />";
+	},
 
 	store : function(args) {
 		var params = {
@@ -112,6 +118,7 @@ Ext.define("wallet.util", {
 				position : "left",
 				fields : args.value,
 				grid : true,
+				minimum : 0,
 				label : {
 					renderer : util.currency
 				}
