@@ -126,7 +126,7 @@ Ext.define("wallet.outlay", {
 		if (form.isValid()) {
 			var url = "/record/save/outlay";
 			var params = form.getValues();
-			params.occurTime = params.date + " " + params.time + ":00";
+			params.occurTime = params.date + " " + params.time;
 			if (panel.params) {
 				url = "/record/update/outlay";
 				params.id = panel.params.id;
@@ -138,7 +138,7 @@ Ext.define("wallet.outlay", {
 				params : params,
 				waitTitle : "提示",
 				waitMsg : "保存中...",
-				success : function(form, action) {
+				success : function() {
 					panel.close(panel);
 				},
 				failure : function(form, action) {

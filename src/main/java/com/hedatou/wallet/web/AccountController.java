@@ -1,11 +1,15 @@
 package com.hedatou.wallet.web;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 
+import com.hedatou.wallet.domain.Account;
 import com.hedatou.wallet.service.AccountService;
 
 @Controller
@@ -29,23 +33,33 @@ public class AccountController extends ControllerSupport {
 		return view;
 	}
 
-	@RequestMapping("switchDisplay")
-	public View switchDisplay(long id, Model model) {
-		service.switchDisplay(id);
+	@RequestMapping("display")
+	public View display(long id, Model model) {
+		service.display(id);
 		model.addAttribute("success", true);
 		return view;
 	}
 
-	@RequestMapping("setIncome")
-	public View setIncome(long id, Model model) {
-		service.setIncome(id);
+	@RequestMapping("income")
+	public View income(long id, Model model) {
+		service.income(id);
 		model.addAttribute("success", true);
 		return view;
 	}
 
-	@RequestMapping("setOutlay")
-	public View setOutlay(long id, Model model) {
-		service.setOutlay(id);
+	@RequestMapping("outlay")
+	public View outlay(long id, Model model) {
+		service.outlay(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	@RequestMapping("update")
+	public View update(@Valid Account account, BindingResult binding,
+			Model model) {
+		if (binding.hasErrors())
+			return handleBindingError(binding, model);
+		service.update(account);
 		model.addAttribute("success", true);
 		return view;
 	}

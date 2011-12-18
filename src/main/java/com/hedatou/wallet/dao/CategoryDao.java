@@ -19,4 +19,9 @@ public class CategoryDao extends DaoSupport<Category> {
 				"type", type, false);
 	}
 
+	public Category checksByType(CategoryType type) {
+		return unique("from Category c where c.type=:type and c.checks=true",
+				"type", type);
+	}
+
 }

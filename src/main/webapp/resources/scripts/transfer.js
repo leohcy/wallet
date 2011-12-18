@@ -131,7 +131,7 @@ Ext.define("wallet.transfer", {
 		if (form.isValid()) {
 			var url = "/record/save/transfer";
 			var params = form.getValues();
-			params.occurTime = params.date + " " + params.time + ":00";
+			params.occurTime = params.date + " " + params.time;
 			if (panel.params) {
 				url = "/record/update/transfer";
 				params.id = panel.params.id;
@@ -143,7 +143,7 @@ Ext.define("wallet.transfer", {
 				params : params,
 				waitTitle : "提示",
 				waitMsg : "保存中...",
-				success : function(form, action) {
+				success : function() {
 					panel.close(panel);
 				},
 				failure : function(form, action) {

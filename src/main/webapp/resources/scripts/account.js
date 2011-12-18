@@ -27,13 +27,9 @@ Ext.define("wallet.account", {
 	initGrid : function(store) {
 		var editor = {
 			ptype : "rowediting",
-			errorSummary : false,
 			clicksToMoveEditor : 1,
 			listeners : {
-				edit : function(e) {
-					var form = this.getEditor().getForm();
-					var params = form.getValues();
-				}
+				validateedit : this.edit.delegate(store)
 			}
 		};
 		var accountType = Ext.create("Ext.data.ArrayStore", {
@@ -110,66 +106,61 @@ Ext.define("wallet.account", {
 				dataIndex : "defaultIncome",
 				width : 40,
 				menuDisabled : true,
-				renderer : util.status,
-				editor : {
-					xtype : "checkbox"
-				}
+				renderer : util.status
 			}, {
 				header : "支出",
 				dataIndex : "defaultOutlay",
 				width : 40,
 				menuDisabled : true,
-				renderer : util.status,
-				editor : {
-					xtype : "checkbox"
-				}
+				renderer : util.status
 			}, {
 				header : "显示",
 				dataIndex : "display",
 				width : 40,
 				menuDisabled : true,
-				renderer : util.status,
-				editor : {
-					xtype : "checkbox"
-				}
+				renderer : util.status
 			} ],
-			tbar : [
-					{
-						text : "刷新",
-						iconCls : "icon-reload",
-						handler : function() {
-							store.load();
-						}
-					},
-					"-",
-					{
-						text : "设为默认收入",
-						iconCls : "icon-income",
-						id : "incomeBtn",
-						disabled : true,
-						handler : this.setup.delegate(this, store,
-								"/account/setIncome")
-					},
-					{
-						text : "设为默认支出",
-						iconCls : "icon-outlay",
-						id : "outlayBtn",
-						disabled : true,
-						handler : this.setup.delegate(this, store,
-								"/account/setOutlay")
-					},
-					{
-						text : "显示/隐藏",
-						iconCls : "icon-show-hide",
-						id : "displayBtn",
-						disabled : true,
-						handler : this.setup.delegate(this, store,
-								"/account/switchDisplay")
-					}, "->", {
-						xtype : "tbtext",
-						id : "account-sum",
-						text : "总资产：<span class='statistics'>￥0.00</span>"
-					} ],
+			tbar : [ {
+				text : "刷新",
+				iconCls : "icon-reload",
+				handler : function() {
+					store.load();
+				}
+			}, "-", {
+				text : "添加账户",
+				iconCls : "icon-add",
+				handler : function() {
+					// store.load();
+				}
+			}, {
+				text : "删除账户",
+				iconCls : "icon-remove",
+				handler : function() {
+					// store.load();
+				}
+			}, "-", {
+				text : "设为默认收入",
+				iconCls : "icon-income",
+				id : "incomeBtn",
+				disabled : true,
+				handler : this.setup.delegate(this, store, "/account/income")
+			}, {
+				text : "设为默认支出",
+				iconCls : "icon-outlay",
+				id : "outlayBtn",
+				disabled : true,
+				handler : this.setup.delegate(this, store, "/account/outlay")
+			}, {
+				text : "显示/隐藏",
+				iconCls : "icon-show-hide",
+				id : "displayBtn",
+				disabled : true,
+				handler : this.setup.delegate(this, store, "/account/display")
+			}, "->", {
+				xtype : "tbtext",
+				id : "account-sum",
+				text : "总资产：<span class='statistics'>￥0.00</span>"
+			} ],
 			listeners : {
 				selectionchange : function() {
 					var sm = this.getSelectionModel();
@@ -183,6 +174,55 @@ Ext.define("wallet.account", {
 				}
 			}
 		};
+	},
+	edit : function(store) {
+		var editor = this;
+		var form = editor.getEditor().getForm();
+		var params = form.getValues();
+		var record = editor.context.record;
+		params.id = record.getId();
+		params.version = record.get("version");
+		params.lastUpdate = util.datetime(record.get("lastUpdate"));
+		params.createTime = util.datetime(record.get("createTime"));
+		params.defaultIncome = record.get("defaultIncome");
+		params.defaultOutlay = record.get("defaultOutlay");
+		params.display = record.get("display");
+		params.orderNo = record.get("orderNo");
+		form.submit({
+			clientValidation : false,
+			url : "/account/update",
+			params : params,
+			waitTitle : "提示",
+			waitMsg : "保存中...",
+			success : function() {
+				store.load();
+			},
+			failure : function(form, action) {
+				if (action.failureType != "server") {
+					Ext.Msg.alert("提示", "发生错误");
+				} else if (!action.result.errors) {
+					Ext.Msg.alert("提示", action.result.message);
+				} else {
+					editor.startEdit(record, 0);
+					for ( var name in action.result.errors) {
+						var field = form.findField(name);
+						if (field) {
+							var message = action.result.errors[name];
+							field.markInvalid(message);
+							var chain = field.validator;
+							field.validator = function(value) {
+								if (typeof (chain) == "function") {
+									var msg = chain(value);
+									if (msg !== true)
+										return msg;
+								}
+								return (value != params[name]) || message;
+							};
+						}
+					}
+				}
+			}
+		});
 	},
 	setup : function(panel, store, url) {
 		var mask = new Ext.LoadMask(Ext.getBody(), {

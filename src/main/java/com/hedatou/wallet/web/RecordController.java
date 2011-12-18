@@ -61,6 +61,12 @@ public class RecordController extends ControllerSupport {
 	@RequestMapping(value = "save/transfer")
 	public View save(@Valid TransferRecord record, BindingResult binding,
 			Model model) {
+		if (record.getFromAccount() != null && record.getToAccount() != null
+				&& record.getFromAccount().equals(record.getToAccount())) {
+			binding.rejectValue("fromAccount.id",
+					"fromAccount.equals.toAccount");
+			binding.rejectValue("toAccount.id", "fromAccount.equals.toAccount");
+		}
 		return _save(record, binding, model);
 	}
 
@@ -86,6 +92,12 @@ public class RecordController extends ControllerSupport {
 	@RequestMapping(value = "update/transfer")
 	public View update(@Valid TransferRecord record, BindingResult binding,
 			Model model) {
+		if (record.getFromAccount() != null && record.getToAccount() != null
+				&& record.getFromAccount().equals(record.getToAccount())) {
+			binding.rejectValue("fromAccount.id",
+					"fromAccount.equals.toAccount");
+			binding.rejectValue("toAccount.id", "fromAccount.equals.toAccount");
+		}
 		return _update(record, binding, model);
 	}
 

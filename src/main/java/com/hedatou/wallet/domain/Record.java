@@ -27,7 +27,7 @@ public abstract class Record extends Domain {
 	private BigDecimal amount;
 	@NotNull
 	@Past
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date occurTime;
 	@NotNull
