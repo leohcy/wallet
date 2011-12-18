@@ -363,35 +363,34 @@ Ext.define("wallet.record", {
 		}
 	},
 	remove : function(panel) {
-		Ext.Msg.confirm("确认", "是否删除该记录",
-				function(result) {
-					if (result != "yes")
-						return;
-					var mask = new Ext.LoadMask(Ext.getBody(), {
-						msg : "删除中..."
-					});
-					mask.show();
-					var record = panel.down("grid").getSelectionModel()
-							.getSelection()[0];
-					Ext.Ajax.request({
-						url : "/record/remove",
-						params : {
-							id : record.getId()
-						},
-						callback : function(opt, success, response) {
-							mask.destroy();
-							if (success) {
-								var json = Ext.JSON
-										.decode(response.responseText);
-								if (json.success)
-									panel.store.load();
-								else
-									Ext.Msg.alert("提示", json.message);
-							} else {
-								Ext.Msg.alert("提示", "发生错误");
-							}
-						}
-					});
-				});
+		var record = panel.down("grid").getSelectionModel().getSelection()[0];
+		if (!record)
+			return;
+		Ext.Msg.confirm("确认", "是否删除该记录", function(result) {
+			if (result != "yes")
+				return;
+			var mask = new Ext.LoadMask(Ext.getBody(), {
+				msg : "删除中..."
+			});
+			mask.show();
+			Ext.Ajax.request({
+				url : "/record/remove",
+				params : {
+					id : record.getId()
+				},
+				callback : function(opt, success, response) {
+					mask.destroy();
+					if (success) {
+						var json = Ext.JSON.decode(response.responseText);
+						if (json.success)
+							panel.store.load();
+						else
+							Ext.Msg.alert("提示", json.message);
+					} else {
+						Ext.Msg.alert("提示", "发生错误");
+					}
+				}
+			});
+		});
 	}
 });

@@ -146,6 +146,12 @@ Ext.define("wallet.income", {
 						Ext.Msg.alert("提示", "发生错误");
 					else if (!action.result.errors)
 						Ext.Msg.alert("提示", action.result.message);
+					else if (action.result.errors.occurTime) {
+						form.findField("date").markInvalid(
+								action.result.errors.occurTime);
+						form.findField("time").markInvalid(
+								action.result.errors.occurTime);
+					}
 				}
 			});
 		}

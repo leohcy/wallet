@@ -168,4 +168,8 @@ public abstract class DaoSupport<T> {
 		session().delete(domain);
 	}
 
+	public void delete(long id) {
+		delete((T) session().load(domain, id));
+	}
+
 }

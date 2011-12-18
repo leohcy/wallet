@@ -2,6 +2,9 @@ package com.hedatou.wallet.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.hedatou.wallet.domain.Account;
@@ -24,6 +27,22 @@ public class AccountDao extends DaoSupport<Account> {
 
 	public Account defaultOutlay() {
 		return unique("from Account a where a.defaultOutlay=true");
+	}
+
+	public int maxOrder() {
+		return unique("select coalesce(max(a.orderNo),0) from Account a",
+				Integer.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Account> between(int from, boolean includeFrom, int to,
+			boolean includeTo) {
+		Criteria criteria = criteria().addOrder(Order.asc("orderNo"));
+		criteria.add(includeFrom ? Restrictions.ge("orderNo", from)
+				: Restrictions.gt("orderNo", from));
+		criteria.add(includeTo ? Restrictions.le("orderNo", to) : Restrictions
+				.lt("orderNo", to));
+		return criteria.list();
 	}
 
 }

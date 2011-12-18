@@ -18,7 +18,7 @@ import com.hedatou.wallet.domain.OutlayRecord;
 import com.hedatou.wallet.util.MessageSourceException;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class AccountService {
 
 	@Autowired
@@ -28,21 +28,21 @@ public class AccountService {
 	@Autowired
 	private RecordService recordService;
 
+	@Transactional(readOnly = true)
 	public List<Account> displayed() {
 		return dao.displayed();
 	}
 
+	@Transactional(readOnly = true)
 	public List<Account> sorted() {
 		return dao.sorted();
 	}
 
-	@Transactional
 	public void display(long id) {
 		Account account = dao.get(id);
 		account.setDisplay(!account.getDisplay());
 	}
 
-	@Transactional
 	public void income(long id) {
 		Account oldDefault = dao.defaultIncome();
 		if (oldDefault != null)
@@ -52,7 +52,6 @@ public class AccountService {
 			newDefault.setDefaultIncome(true);
 	}
 
-	@Transactional
 	public void outlay(long id) {
 		Account oldDefault = dao.defaultOutlay();
 		if (oldDefault != null)
@@ -62,7 +61,11 @@ public class AccountService {
 			newDefault.setDefaultOutlay(true);
 	}
 
-	@Transactional
+	public void save(Account account) {
+		account.setOrderNo(dao.maxOrder());
+		dao.save(account);
+	}
+
 	public void update(Account account) {
 		Account old = dao.get(account.getId());
 		int compare = account.getBalance().compareTo(old.getBalance());
@@ -95,6 +98,28 @@ public class AccountService {
 		account.setDefaultOutlay(old.getDefaultOutlay());
 		account.setDisplay(old.getDisplay());
 		dao.merge(account);
+	}
+
+	public void remove(long id) {
+		dao.delete(id);
+	}
+
+	public void sort(long source, long target, boolean before) {
+		int from = dao.get(source).getOrderNo(), to = dao.get(target)
+				.getOrderNo();
+		if (from < to) {
+			List<Account> accounts = dao.between(from, true, to, !before);
+			int tmp = accounts.get(accounts.size() - 1).getOrderNo();
+			for (int i = accounts.size() - 1; i > 0; i--)
+				accounts.get(i).setOrderNo(accounts.get(i - 1).getOrderNo());
+			accounts.get(0).setOrderNo(tmp);
+		} else if (from > to) {
+			List<Account> accounts = dao.between(to, before, from, true);
+			int tmp = accounts.get(0).getOrderNo();
+			for (int i = 0; i < accounts.size() - 1; i++)
+				accounts.get(i).setOrderNo(accounts.get(i + 1).getOrderNo());
+			accounts.get(accounts.size() - 1).setOrderNo(tmp);
+		}
 	}
 
 }

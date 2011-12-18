@@ -22,7 +22,7 @@ import com.hedatou.wallet.domain.Record;
 import com.hedatou.wallet.domain.TransferRecord;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class RecordService {
 
 	@Autowired
@@ -32,6 +32,7 @@ public class RecordService {
 	@Autowired
 	private AccountDao accountDao;
 
+	@Transactional(readOnly = true)
 	public List<Record> query(CategoryType categoryType, Long category,
 			AccountType accountType, Long account, Date startDate,
 			Date endDate, BigDecimal minAmount, BigDecimal maxAmount,
@@ -46,7 +47,6 @@ public class RecordService {
 				startDate, endDate, minAmount, maxAmount, keyword);
 	}
 
-	@Transactional
 	public void save(Record record) {
 		Category category = categoryDao.get(record.getCategory().getId());
 		record.setCategory(category);
@@ -79,7 +79,6 @@ public class RecordService {
 		dao.save(record);
 	}
 
-	@Transactional
 	public void remove(long id) {
 		Record record = dao.get(id);
 		Category category = record.getCategory();
@@ -108,7 +107,6 @@ public class RecordService {
 		dao.delete(record);
 	}
 
-	@Transactional
 	public void update(Record record) {
 		Record old = dao.get(record.getId());
 		Category oldc = old.getCategory(), newc = categoryDao.get(record

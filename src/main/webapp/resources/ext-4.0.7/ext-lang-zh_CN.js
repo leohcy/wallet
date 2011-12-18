@@ -32,6 +32,10 @@ Ext.onReady(function(){
     if(Ext.grid.Panel){
        Ext.grid.Panel.prototype.ddText = "选择了 {0} 行";
     }
+    
+    if(Ext.grid.plugin.DragDrop){
+    	Ext.grid.plugin.DragDrop.prototype.dragText = "选择了 {0} 行";
+    }
 
     if(Ext.tab.Tab){
     	Ext.tab.Tab.prototype.closeText = "关闭此标签";

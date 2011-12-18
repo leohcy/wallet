@@ -54,12 +54,35 @@ public class AccountController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("save")
+	public View save(@Valid Account account, BindingResult binding, Model model) {
+		if (binding.hasErrors())
+			return handleBindingError(binding, model);
+		service.save(account);
+		model.addAttribute("success", true);
+		return view;
+	}
+
 	@RequestMapping("update")
 	public View update(@Valid Account account, BindingResult binding,
 			Model model) {
 		if (binding.hasErrors())
 			return handleBindingError(binding, model);
 		service.update(account);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	@RequestMapping(value = "remove")
+	public View remove(long id, Model model) {
+		service.remove(id);
+		model.addAttribute("success", true);
+		return view;
+	}
+
+	@RequestMapping(value = "sort")
+	public View sort(long source, long target, boolean before, Model model) {
+		service.sort(source, target, before);
 		model.addAttribute("success", true);
 		return view;
 	}
