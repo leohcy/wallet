@@ -61,6 +61,8 @@ Ext.define("wallet.util", {
 			params.fields = args.fields;
 		else if (typeof args.model != "undefined")
 			params.model = args.model;
+		if (typeof args.groupField != "undefined")
+			params.groupField = args.groupField;
 		if (typeof args.load != "undefined") {
 			params.listeners = {
 				load : args.load
@@ -76,16 +78,13 @@ Ext.define("wallet.util", {
 			animate : true,
 			insetPadding : args.padding || 10,
 			theme : args.theme || "Base",
-			legend : {
-				position : args.legend || "right"
-			},
 			series : [ {
 				type : "pie",
 				field : args.value,
 				showInLegend : true,
 				tips : {
 					trackMouse : true,
-					width : 120,
+					width : 140,
 					renderer : util.renderer(args.tpl, args.build, function(
 							string) {
 						this.setTitle(string);
@@ -103,8 +102,14 @@ Ext.define("wallet.util", {
 				}
 			} ]
 		};
+		if (args.legend !== false)
+			params.legend = {
+				position : args.legend || "right"
+			};
 		if (typeof args.params != "undefined")
 			Ext.apply(params, args.params);
+		if (typeof args.listeners != "undefined")
+			params.listeners = args.listeners;
 		return params;
 	},
 
@@ -164,7 +169,7 @@ window.util = Ext.create("wallet.util");
 Function.prototype.delegate = function() {
 	var func = this, args = arguments;
 	return function() {
-		func.apply(this, args);
+		return func.apply(this, args);
 	};
 };
 

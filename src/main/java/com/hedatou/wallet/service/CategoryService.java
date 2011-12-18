@@ -1,5 +1,7 @@
 package com.hedatou.wallet.service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,28 @@ public class CategoryService {
 
 	public List<Category> transfer() {
 		return dao.byType(CategoryType.转账);
+	}
+
+	@Transactional
+	public void save(Category category) {
+		category.setTotal(new BigDecimal(0));
+		category.setLastUpdate(new Date());
+		category.setDefaults(false);
+		category.setChecks(false);
+		category.setOrderNo(dao.maxOrder());
+		dao.save(category);
+	}
+
+	@Transactional
+	public void update(Category category) {
+		Category old = dao.get(category.getId());
+		category.setType(old.getType());
+		category.setTotal(old.getTotal());
+		category.setLastUpdate(new Date());
+		category.setDefaults(old.getDefaults());
+		category.setChecks(old.getChecks());
+		category.setOrderNo(old.getOrderNo());
+		dao.merge(category);
 	}
 
 }

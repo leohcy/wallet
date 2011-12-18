@@ -19,6 +19,7 @@
 #footer { background:#DFE8F6; text-align:center; font-size:12px; }
 
 .menu-button .x-btn-inner { font-size:14px; font-weight:bold; }
+.x-grid-row-summary .x-grid-cell-inner { font-size:12px; font-weight:bold; }
 .statistics { color:blue; }
 .positive { color:green; }
 .negative { color:red; }

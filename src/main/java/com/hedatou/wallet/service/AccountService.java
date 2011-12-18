@@ -62,6 +62,9 @@ public class AccountService {
 	}
 
 	public void save(Account account) {
+		account.setLastUpdate(new Date());
+		account.setDefaultIncome(false);
+		account.setDefaultOutlay(false);
 		account.setOrderNo(dao.maxOrder());
 		dao.save(account);
 	}
@@ -93,10 +96,9 @@ public class AccountService {
 			recordService.save(outlay);
 		}
 		account.setLastUpdate(new Date());
-		account.setCreateTime(old.getCreateTime());
 		account.setDefaultIncome(old.getDefaultIncome());
 		account.setDefaultOutlay(old.getDefaultOutlay());
-		account.setDisplay(old.getDisplay());
+		account.setOrderNo(old.getOrderNo());
 		dao.merge(account);
 	}
 

@@ -42,7 +42,7 @@ public class Category extends Domain {
 	@Length(max = 128)
 	private String description;
 	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
 	@NotNull

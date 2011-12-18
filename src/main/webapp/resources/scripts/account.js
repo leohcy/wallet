@@ -28,6 +28,7 @@ Ext.define("wallet.account", {
 		var panel = this;
 		this.editor = Ext.create("Ext.grid.plugin.RowEditing", {
 			errorSummary : false,
+			clicksToMoveEditor : 1,
 			listeners : {
 				validateedit : this.commit.delegate(this),
 				beforeedit : function(e) {
@@ -41,6 +42,8 @@ Ext.define("wallet.account", {
 				canceledit : function(e) {
 					if (e.record.phantom)
 						e.store.remove(e.record);
+					else if (e.record.dirty)
+						e.record.reject();
 				}
 			}
 		});
@@ -130,21 +133,13 @@ Ext.define("wallet.account", {
 				dataIndex : "defaultIncome",
 				width : 40,
 				menuDisabled : true,
-				renderer : util.status,
-				editor : {
-					xtype : "displayfield",
-					style : "top:8px"
-				}
+				renderer : util.status
 			}, {
 				header : "支出",
 				dataIndex : "defaultOutlay",
 				width : 40,
 				menuDisabled : true,
-				renderer : util.status,
-				editor : {
-					xtype : "displayfield",
-					style : "top:8px"
-				}
+				renderer : util.status
 			}, {
 				header : "显示",
 				dataIndex : "display",
