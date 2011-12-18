@@ -75,6 +75,31 @@ Ext.define("wallet.category", {
 				}
 			}
 		});
+		var view = {
+			plugins : {
+				ptype : "gridviewdragdrop"
+			},
+			listeners : {
+				viewready : function() {
+					this.plugins[0].dropZone.onNodeOver = function(node,
+							dragZone, e, data) {
+						var drags = data.records;
+						var drop = this.view.getRecord(node);
+						if (!Ext.Array.contains(drags, drop)
+								&& drags[0].get("type") == drop.get("type"))
+							this.positionIndicator(node, data, e);
+						else
+							this.invalidateDrop();
+						return this.valid ? this.dropAllowed
+								: this.dropNotAllowed;
+					};
+				},
+				drop : function(node, data, drop, position) {
+					panel.sort(data.records[0].getId(), drop.getId(),
+							position == "before");
+				}
+			}
+		};
 		var categoryType = Ext.create("Ext.data.ArrayStore", {
 			fields : [ "name" ],
 			data : [ [ "支出" ], [ "收入" ], [ "转账" ] ]
@@ -88,9 +113,10 @@ Ext.define("wallet.category", {
 			store : this.store,
 			plugins : this.editor,
 			features : [ {
-				ftype : "groupingsummary",
+				ftype : "grouping",
 				groupHeaderTpl : "{name}"
 			} ],
+			viewConfig : view,
 			columns : [ {
 				xtype : "rownumberer"
 			}, {
@@ -98,10 +124,6 @@ Ext.define("wallet.category", {
 				dataIndex : "name",
 				width : 100,
 				menuDisabled : true,
-				summaryType : "count",
-				summaryRenderer : function(value) {
-					return "（" + value + " 类）";
-				},
 				editor : {
 					emptyText : "请输入...",
 					allowBlank : false
@@ -125,9 +147,7 @@ Ext.define("wallet.category", {
 				dataIndex : "total",
 				width : 100,
 				menuDisabled : true,
-				renderer : util.currency,
-				summaryType : "sum",
-				summaryRenderer : util.currency
+				renderer : util.currency
 			}, {
 				header : "备注",
 				dataIndex : "description",
@@ -141,9 +161,7 @@ Ext.define("wallet.category", {
 				dataIndex : "lastUpdate",
 				width : 120,
 				menuDisabled : true,
-				renderer : util.datetime,
-				summaryType : "max",
-				summaryRenderer : util.datetime
+				renderer : util.datetime
 			}, {
 				header : "默认",
 				dataIndex : "defaults",
@@ -164,9 +182,27 @@ Ext.define("wallet.category", {
 					panel.store.load();
 				}
 			}, "-", {
-				text : "添加账户",
+				text : "添加分类",
 				iconCls : "icon-add",
 				handler : this.addCategory.delegate(this)
+			}, {
+				text : "删除分类",
+				iconCls : "icon-remove",
+				id : "removeCategoryBtn",
+				disabled : true,
+				handler : this.remove.delegate(this)
+			}, "-", {
+				text : "设为默认",
+				iconCls : "icon-defaults",
+				id : "defaultsBtn",
+				disabled : true,
+				handler : this.setup.delegate(this, "/category/defaults")
+			}, {
+				text : "设为盘点",
+				iconCls : "icon-checks",
+				id : "checksBtn",
+				disabled : true,
+				handler : this.setup.delegate(this, "/category/checks")
 			}, "->", {
 				xtype : "tbtext",
 				id : "category-outlay-sum",
@@ -179,7 +215,19 @@ Ext.define("wallet.category", {
 				xtype : "tbtext",
 				id : "category-transfer-sum",
 				text : "转账：<span class='statistics'>￥0.00</span>"
-			} ]
+			} ],
+			listeners : {
+				selectionchange : function() {
+					var sm = this.getSelectionModel();
+					var multi = sm.getCount() != 1;
+					var sl = sm.getSelection();
+					this.down("#defaultsBtn").setDisabled(
+							multi || sl[0].get("defaults"));
+					this.down("#checksBtn").setDisabled(
+							multi || sl[0].get("checks"));
+					this.down("#removeCategoryBtn").setDisabled(multi);
+				}
+			}
 		};
 	},
 	commit : function(panel) {
@@ -230,11 +278,37 @@ Ext.define("wallet.category", {
 			}
 		});
 	},
+	sort : function(source, target, before) {
+		var panel = this;
+		var mask = new Ext.LoadMask(Ext.getBody(), {
+			msg : "设置中..."
+		});
+		mask.show();
+		Ext.Ajax.request({
+			url : "/category/sort",
+			params : {
+				source : source,
+				target : target,
+				before : before
+			},
+			callback : function(opt, success, response) {
+				mask.destroy();
+				if (success) {
+					var json = Ext.JSON.decode(response.responseText);
+					if (json.success)
+						panel.store.load();
+					else
+						Ext.Msg.alert("提示", json.message);
+				} else {
+					Ext.Msg.alert("提示", "发生错误");
+				}
+			}
+		});
+	},
 	addCategory : function(panel) {
 		panel.editor.cancelEdit();
 		var now = new Date().getTime();
 		var category = Ext.create("model.category", {
-			type : "支出",
 			total : 0,
 			lastUpdate : now,
 			defaults : false,
@@ -244,6 +318,67 @@ Ext.define("wallet.category", {
 		});
 		panel.store.insert(0, category);
 		panel.editor.startEdit(category, 0);
+	},
+	setup : function(panel, url) {
+		panel.editor.cancelEdit();
+		var grid = panel.down("grid");
+		var record = grid.getSelectionModel().getSelection()[0];
+		if (!record)
+			return;
+		var mask = new Ext.LoadMask(Ext.getBody(), {
+			msg : "设置中..."
+		});
+		mask.show();
+		Ext.Ajax.request({
+			url : url,
+			params : {
+				id : record.getId()
+			},
+			callback : function(opt, success, response) {
+				mask.destroy();
+				if (success) {
+					var json = Ext.JSON.decode(response.responseText);
+					if (json.success)
+						panel.store.load();
+					else
+						Ext.Msg.alert("提示", json.message);
+				} else {
+					Ext.Msg.alert("提示", "发生错误");
+				}
+			}
+		});
+	},
+	remove : function(panel) {
+		panel.editor.cancelEdit();
+		var record = panel.down("grid").getSelectionModel().getSelection()[0];
+		if (!record)
+			return;
+		Ext.Msg.confirm("确认", "是否删除该分类", function(result) {
+			if (result != "yes")
+				return;
+			var mask = new Ext.LoadMask(Ext.getBody(), {
+				msg : "删除中..."
+			});
+			mask.show();
+			Ext.Ajax.request({
+				url : "/category/remove",
+				params : {
+					id : record.getId()
+				},
+				callback : function(opt, success, response) {
+					mask.destroy();
+					if (success) {
+						var json = Ext.JSON.decode(response.responseText);
+						if (json.success)
+							panel.store.load();
+						else
+							Ext.Msg.alert("提示", json.message);
+					} else {
+						Ext.Msg.alert("提示", "发生错误");
+					}
+				}
+			});
+		});
 	},
 
 	initChart : function() {

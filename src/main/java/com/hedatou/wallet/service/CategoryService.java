@@ -11,31 +11,46 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hedatou.wallet.dao.CategoryDao;
 import com.hedatou.wallet.domain.Category;
 import com.hedatou.wallet.domain.Category.CategoryType;
+import com.hedatou.wallet.util.MessageSourceException;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class CategoryService {
 
 	@Autowired
 	private CategoryDao dao;
 
+	@Transactional(readOnly = true)
 	public List<Category> sorted() {
 		return dao.sorted();
 	}
 
-	public List<Category> income() {
-		return dao.byType(CategoryType.收入);
+	@Transactional(readOnly = true)
+	public List<Category> byType(CategoryType type) {
+		return dao.byType(type);
 	}
 
-	public List<Category> outlay() {
-		return dao.byType(CategoryType.支出);
+	public void defaults(long id) {
+		Category newDefault = dao.get(id);
+		Category oldDefault = dao.defaultsByType(newDefault.getType());
+		if (newDefault != null)
+			newDefault.setDefaults(true);
+		if (oldDefault != null)
+			oldDefault.setDefaults(false);
 	}
 
-	public List<Category> transfer() {
-		return dao.byType(CategoryType.转账);
+	public void checks(long id) {
+		Category newCheck = dao.get(id);
+		if (CategoryType.转账.equals(newCheck.getType()))
+			throw new MessageSourceException(
+					"transferCategory.cannot.set.check");
+		Category oldCheck = dao.checksByType(newCheck.getType());
+		if (newCheck != null)
+			newCheck.setChecks(true);
+		if (oldCheck != null)
+			oldCheck.setChecks(false);
 	}
 
-	@Transactional
 	public void save(Category category) {
 		category.setTotal(new BigDecimal(0));
 		category.setLastUpdate(new Date());
@@ -45,7 +60,6 @@ public class CategoryService {
 		dao.save(category);
 	}
 
-	@Transactional
 	public void update(Category category) {
 		Category old = dao.get(category.getId());
 		category.setType(old.getType());
@@ -55,6 +69,30 @@ public class CategoryService {
 		category.setChecks(old.getChecks());
 		category.setOrderNo(old.getOrderNo());
 		dao.merge(category);
+	}
+
+	public void remove(long id) {
+		dao.delete(id);
+	}
+
+	public void sort(long source, long target, boolean before) {
+		int from = dao.get(source).getOrderNo(), to = dao.get(target)
+				.getOrderNo();
+		if (from < to) {
+			List<Category> categories = dao.between(from, true, to, !before);
+			int tmp = categories.get(categories.size() - 1).getOrderNo();
+			for (int i = categories.size() - 1; i > 0; i--)
+				categories.get(i)
+						.setOrderNo(categories.get(i - 1).getOrderNo());
+			categories.get(0).setOrderNo(tmp);
+		} else if (from > to) {
+			List<Category> categories = dao.between(to, before, from, true);
+			int tmp = categories.get(0).getOrderNo();
+			for (int i = 0; i < categories.size() - 1; i++)
+				categories.get(i)
+						.setOrderNo(categories.get(i + 1).getOrderNo());
+			categories.get(categories.size() - 1).setOrderNo(tmp);
+		}
 	}
 
 }

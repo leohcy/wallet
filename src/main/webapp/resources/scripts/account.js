@@ -160,7 +160,7 @@ Ext.define("wallet.account", {
 			}, {
 				text : "删除账户",
 				iconCls : "icon-remove",
-				id : "removeBtn",
+				id : "removeAccountBtn",
 				disabled : true,
 				handler : this.remove.delegate(this)
 			}, "-", {
@@ -196,7 +196,7 @@ Ext.define("wallet.account", {
 					this.down("#outlayBtn").setDisabled(
 							multi || sl[0].get("defaultOutlay"));
 					this.down("#displayBtn").setDisabled(multi);
-					this.down("#removeBtn").setDisabled(multi);
+					this.down("#removeAccountBtn").setDisabled(multi);
 				}
 			}
 		};
@@ -294,12 +294,13 @@ Ext.define("wallet.account", {
 	},
 	setup : function(panel, url) {
 		panel.editor.cancelEdit();
+		var record = panel.down("grid").getSelectionModel().getSelection()[0];
+		if (!record)
+			return;
 		var mask = new Ext.LoadMask(Ext.getBody(), {
 			msg : "设置中..."
 		});
 		mask.show();
-		var grid = panel.down("grid");
-		var record = grid.getSelectionModel().getSelection()[0];
 		Ext.Ajax.request({
 			url : url,
 			params : {

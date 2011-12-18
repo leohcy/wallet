@@ -45,18 +45,18 @@ public class AccountService {
 
 	public void income(long id) {
 		Account oldDefault = dao.defaultIncome();
+		Account newDefault = dao.get(id);
 		if (oldDefault != null)
 			oldDefault.setDefaultIncome(false);
-		Account newDefault = dao.get(id);
 		if (newDefault != null)
 			newDefault.setDefaultIncome(true);
 	}
 
 	public void outlay(long id) {
 		Account oldDefault = dao.defaultOutlay();
+		Account newDefault = dao.get(id);
 		if (oldDefault != null)
 			oldDefault.setDefaultOutlay(false);
-		Account newDefault = dao.get(id);
 		if (newDefault != null)
 			newDefault.setDefaultOutlay(true);
 	}

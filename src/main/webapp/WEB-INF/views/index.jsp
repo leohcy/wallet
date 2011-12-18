@@ -44,6 +44,8 @@
 .icon-update { background-image:url(/resources/images/calculator_edit.png) !important; }
 .icon-remove { background-image:url(/resources/images/calculator_delete.png) !important; }
 .icon-show-hide { background-image:url(/resources/images/eye.png) !important; }
+.icon-defaults { background-image:url(/resources/images/wrench.png) !important; }
+.icon-checks { background-image:url(/resources/images/wrench_orange.png) !important; }
 </style>
 	</head>
 	<body>
