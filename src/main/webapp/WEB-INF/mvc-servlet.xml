@@ -25,6 +25,7 @@
 	</mvc:interceptors>
 	<mvc:default-servlet-handler />
 	<mvc:resources mapping="/resources/" location="/resources/**" />
+	<mvc:resources mapping="/favicon.ico" location="/resources/images/logo.ico" />
 	<mvc:view-controller path="/" view-name="index" />
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />

@@ -33,7 +33,7 @@ public class CategoryDao extends DaoSupport<Category> {
 	}
 
 	public int maxOrder() {
-		return unique("select coalesce(max(c.orderNo),0) from Category c",
+		return unique("select nvl(max(c.orderNo), 0) from Category c",
 				Integer.class);
 	}
 

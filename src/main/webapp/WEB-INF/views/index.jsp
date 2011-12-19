@@ -5,7 +5,6 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<title>我的账本</title>
-		<link rel="icon" type="image/x-icon" href="/resources/images/logo.ico" />
 		<link rel="stylesheet" type="text/css" href="/resources/ext-4.0.7/css/ext-all.css" />
 		<style type="text/css">
 #loading-mask { background-color:white; height:100%; position:absolute; left:0; top:0; width:100%; z-index:20000; }
@@ -33,6 +32,9 @@
 .icon-account { background-image:url(/resources/images/report.png) !important; }
 .icon-category { background-image:url(/resources/images/color_swatch.png) !important; }
 .icon-database { background-image:url(/resources/images/database_gear.png) !important; }
+.icon-console { background-image:url(/resources/images/application_osx_terminal.png) !important; }
+.icon-script { background-image:url(/resources/images/script.png) !important; }
+.icon-download { background-image:url(/resources/images/disk.png) !important; }
 .icon-reload { background-image:url(/resources/images/arrow_refresh.png) !important; }
 .icon-query { background-image:url(/resources/images/magnifier.png) !important; }
 .icon-week { background-image:url(/resources/images/application_form_magnify.png) !important; }

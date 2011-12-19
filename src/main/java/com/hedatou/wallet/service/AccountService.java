@@ -3,7 +3,6 @@ package com.hedatou.wallet.service;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +79,7 @@ public class AccountService {
 				throw new MessageSourceException("checks.not.set");
 			income.setCategory(checks);
 			income.setIncomeAccount(account);
-			income.setOccurTime(DateTime.now().toDate());
+			income.setOccurTime(new Date());
 			income.setDescription("系统自动添加");
 			recordService.save(income);
 		} else if (compare < 0) {
@@ -91,7 +90,7 @@ public class AccountService {
 				throw new MessageSourceException("checks.not.set");
 			outlay.setCategory(checks);
 			outlay.setOutlayAccount(account);
-			outlay.setOccurTime(DateTime.now().toDate());
+			outlay.setOccurTime(new Date());
 			outlay.setDescription("系统自动添加");
 			recordService.save(outlay);
 		}

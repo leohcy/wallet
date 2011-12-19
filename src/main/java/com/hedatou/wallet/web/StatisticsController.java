@@ -22,4 +22,11 @@ public class StatisticsController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("latestWeekOutlay")
+	public View latestWeekOutlay(int weeks, Model model) {
+		model.addAttribute("data", service.latestWeekOutlay(weeks))
+				.addAttribute("success", true);
+		return view;
+	}
+
 }

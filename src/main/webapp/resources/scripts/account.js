@@ -265,14 +265,14 @@ Ext.define("wallet.account", {
 			},
 			callback : function(opt, success, response) {
 				mask.destroy();
-				if (success) {
-					var json = Ext.JSON.decode(response.responseText);
-					if (json.success)
-						panel.store.load();
-					else
-						Ext.Msg.alert("提示", json.message);
-				} else {
+				if (!success) {
 					Ext.Msg.alert("提示", "发生错误");
+				} else {
+					var json = Ext.JSON.decode(response.responseText);
+					if (!json.success)
+						Ext.Msg.alert("提示", json.message);
+					else
+						panel.store.load();
 				}
 			}
 		});
@@ -308,14 +308,14 @@ Ext.define("wallet.account", {
 			},
 			callback : function(opt, success, response) {
 				mask.destroy();
-				if (success) {
-					var json = Ext.JSON.decode(response.responseText);
-					if (json.success)
-						panel.store.load();
-					else
-						Ext.Msg.alert("提示", json.message);
-				} else {
+				if (!success) {
 					Ext.Msg.alert("提示", "发生错误");
+				} else {
+					var json = Ext.JSON.decode(response.responseText);
+					if (!json.success)
+						Ext.Msg.alert("提示", json.message);
+					else
+						panel.store.load();
 				}
 			}
 		});
@@ -339,14 +339,14 @@ Ext.define("wallet.account", {
 				},
 				callback : function(opt, success, response) {
 					mask.destroy();
-					if (success) {
-						var json = Ext.JSON.decode(response.responseText);
-						if (json.success)
-							panel.store.load();
-						else
-							Ext.Msg.alert("提示", json.message);
-					} else {
+					if (!success) {
 						Ext.Msg.alert("提示", "发生错误");
+					} else {
+						var json = Ext.JSON.decode(response.responseText);
+						if (!json.success)
+							Ext.Msg.alert("提示", json.message);
+						else
+							panel.store.load();
 					}
 				}
 			});

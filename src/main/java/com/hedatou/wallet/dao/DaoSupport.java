@@ -136,6 +136,20 @@ public abstract class DaoSupport<T> {
 		return query(hql, params, paging, domain);
 	}
 
+	protected List<Map<String, Object>> maps(String hql) {
+		return query(hql).list();
+	}
+
+	protected List<Map<String, Object>> maps(String hql, String name,
+			Object value) {
+		return query(hql).setParameter(name, value).list();
+	}
+
+	protected List<Map<String, Object>> maps(String hql,
+			Map<String, ? extends Object> params) {
+		return query(hql).setProperties(params).list();
+	}
+
 	protected void execute(String hql) {
 		session().createQuery(hql).executeUpdate();
 	}

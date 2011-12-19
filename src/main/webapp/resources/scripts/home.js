@@ -104,10 +104,10 @@ Ext.define("wallet.home", {
 
 	initOutlay : function() {
 		var store = util.store({
-			fields : [ "name", "value" ],
+			fields : [ "name", "amount" ],
 			url : "/statistics/latest30DaysOutlay",
 			load : function() {
-				this.sumValue = this.sum("value");
+				this.sumValue = this.sum("amount");
 				var sum = util.currency(this.sumValue);
 				Ext.getCmp("home-outlay-sum").setText(
 						"消费：<span class='statistics'>" + sum + "</span>");
@@ -116,11 +116,11 @@ Ext.define("wallet.home", {
 		var chart = util.pie({
 			store : store,
 			name : "name",
-			value : "value",
+			value : "amount",
 			tpl : "分类：{0}<br/>金额：{1}<br/>比重：{2}",
 			build : function(item) {
-				return [ item.get("name"), util.currency(item.get("value")),
-						util.percent(item.get("value") / store.sumValue) ];
+				return [ item.get("name"), util.currency(item.get("amount")),
+						util.percent(item.get("amount") / store.sumValue) ];
 			},
 			padding : 40,
 			highlight : 20

@@ -3,6 +3,7 @@ package com.hedatou.wallet.dao;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
@@ -13,24 +14,23 @@ import org.springframework.stereotype.Repository;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.hedatou.wallet.domain.Account.AccountType;
+import com.hedatou.wallet.domain.Category;
 import com.hedatou.wallet.domain.Category.CategoryType;
 import com.hedatou.wallet.domain.Record;
-import com.hedatou.wallet.dto.GroupItem;
 
 @Repository
 public class RecordDao extends DaoSupport<Record> {
 
-	public List<GroupItem> groupByCategory(CategoryType type, Date start,
-			Date end) {
-		String hql = "select new com.hedatou.wallet.dto.GroupItem"
-				+ "(c.name as name, sum(r.amount) as amount)"
+	public List<Map<String, Object>> groupByCategory(CategoryType type,
+			Date start, Date end) {
+		String hql = "select new map(c.name as name, sum(r.amount) as amount)"
 				+ " from Record r join r.category c"
 				+ " where c.type=:type and r.occurTime between :start and :end"
 				+ " group by c order by amount desc";
-		return query(hql,
-				ImmutableMap.of("type", type, "start", start, "end", end),
-				false, GroupItem.class);
+		return maps(hql,
+				ImmutableMap.of("type", type, "start", start, "end", end));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,4 +79,26 @@ public class RecordDao extends DaoSupport<Record> {
 					MatchMode.ANYWHERE));
 		return paging(criteria).addOrder(Order.desc("occurTime")).list();
 	}
+
+	public List<Map<String, Object>> groupByWeek(List<Category> categories,
+			Date start, Date end) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("outlay", CategoryType.支出);
+		params.put("start", start);
+		params.put("end", end);
+		StringBuilder sql = new StringBuilder();
+		sql.append("select new map(iso_year(r.occurTime) as year, iso_week(r.occurTime) as week,");
+		sql.append("sum(case when r.category.type=:outlay then r.amount else 0 end) as total");
+		for (Category category : categories) {
+			params.put("c" + category.getId(), category);
+			sql.append(",sum(case when r.category=:c");
+			sql.append(category.getId());
+			sql.append(" then r.amount else 0 end) as c");
+			sql.append(category.getId());
+		}
+		sql.append(") from Record r where r.occurTime between :start and :end ");
+		sql.append("group by iso_year(r.occurTime), iso_week(r.occurTime) order by year, week");
+		return maps(sql.toString(), params);
+	}
+
 }

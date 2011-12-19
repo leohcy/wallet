@@ -63,7 +63,7 @@ Ext.define("wallet.app", {
 					items : [ {
 						text : "周&nbsp;统&nbsp;计",
 						iconCls : "icon-week-stats",
-						handler : this.tabs.delegate(this, "wallet.week")
+						handler : this.prefetch.delegate(this)
 					}, {
 						text : "月&nbsp;统&nbsp;计",
 						iconCls : "icon-month-stats",
@@ -86,8 +86,28 @@ Ext.define("wallet.app", {
 					}, {
 						text : "数据管理",
 						iconCls : "icon-database",
-						handler : function() {
-							window.open("/h2/", "_blank");
+						menuAlign : "tl-tr?",
+						menu : {
+							plain : true,
+							items : [ {
+								text : "控制台",
+								iconCls : "icon-console",
+								handler : function() {
+									window.open("/h2/");
+								}
+							}, {
+								text : "脚本下载",
+								iconCls : "icon-script",
+								handler : function() {
+									window.open("/database/dbscript");
+								}
+							}, {
+								text : "数据下载",
+								iconCls : "icon-download",
+								handler : function() {
+									window.open("/database/backup");
+								}
+							} ]
 						}
 					} ]
 				} ]
@@ -96,7 +116,7 @@ Ext.define("wallet.app", {
 		this.callParent(arguments);
 	},
 
-	tabs : function(app, widget) {
+	tabs : function(app, widget, params) {
 		var tabs = app.down("tabpanel");
 		var id = widget + "-panel";
 		var tab = Ext.getCmp(id);
@@ -104,7 +124,8 @@ Ext.define("wallet.app", {
 			tab = Ext.create(widget, {
 				id : id,
 				iconCls : this.iconCls,
-				closable : true
+				closable : true,
+				params : params || null
 			});
 			tabs.add(tab);
 		}
@@ -126,5 +147,26 @@ Ext.define("wallet.app", {
 				destroy : callback || Ext.emptyFn
 			}
 		}).show();
+	},
+	prefetch : function(app) {
+		var mask = new Ext.LoadMask(Ext.getBody(), {
+			msg : "加载中..."
+		});
+		mask.show();
+		Ext.Ajax.request({
+			url : "/category/outlay",
+			callback : function(opt, success, response) {
+				mask.destroy();
+				if (!success) {
+					Ext.Msg.alert("提示", "发生错误");
+				} else {
+					var json = Ext.JSON.decode(response.responseText);
+					if (!json.success)
+						Ext.Msg.alert("提示", json.message);
+					else
+						app.tabs(app, "wallet.week", json.data);
+				}
+			}
+		});
 	}
 });

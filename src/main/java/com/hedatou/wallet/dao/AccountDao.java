@@ -30,7 +30,7 @@ public class AccountDao extends DaoSupport<Account> {
 	}
 
 	public int maxOrder() {
-		return unique("select coalesce(max(a.orderNo),0) from Account a",
+		return unique("select nvl(max(a.orderNo), 0) from Account a",
 				Integer.class);
 	}
 
