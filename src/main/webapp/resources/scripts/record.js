@@ -193,7 +193,7 @@ Ext.define("wallet.record", {
 		panel.store.loadPage(1);
 	},
 	queryWeek : function(panel) {
-		var day = util.date(new Date(), "N");
+		var day = util.datef(new Date(), "N");
 		var monday = util.addDays(new Date(), 1 - day);
 		var sunday = util.addDays(new Date(), 7 - day);
 		var form = panel.down("form").getForm();

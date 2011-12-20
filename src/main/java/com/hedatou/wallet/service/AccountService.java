@@ -1,5 +1,6 @@
 package com.hedatou.wallet.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hedatou.wallet.dao.AccountDao;
 import com.hedatou.wallet.dao.CategoryDao;
+import com.hedatou.wallet.dao.RecordDao;
 import com.hedatou.wallet.domain.Account;
 import com.hedatou.wallet.domain.Category;
 import com.hedatou.wallet.domain.Category.CategoryType;
@@ -25,7 +27,7 @@ public class AccountService {
 	@Autowired
 	private CategoryDao categoryDao;
 	@Autowired
-	private RecordService recordService;
+	private RecordDao recordDao;
 
 	@Transactional(readOnly = true)
 	public List<Account> displayed() {
@@ -72,27 +74,33 @@ public class AccountService {
 		Account old = dao.get(account.getId());
 		int compare = account.getBalance().compareTo(old.getBalance());
 		if (compare > 0) {
-			IncomeRecord income = new IncomeRecord();
-			income.setAmount(account.getBalance().subtract(old.getBalance()));
+			BigDecimal amount = account.getBalance().subtract(old.getBalance());
 			Category checks = categoryDao.checksByType(CategoryType.收入);
 			if (checks == null)
 				throw new MessageSourceException("checks.not.set");
+			checks.setTotal(checks.getTotal().add(amount));
+			checks.setLastUpdate(new Date());
+			IncomeRecord income = new IncomeRecord();
+			income.setAmount(amount);
 			income.setCategory(checks);
 			income.setIncomeAccount(account);
 			income.setOccurTime(new Date());
 			income.setDescription("系统自动添加");
-			recordService.save(income);
+			recordDao.save(income);
 		} else if (compare < 0) {
-			OutlayRecord outlay = new OutlayRecord();
-			outlay.setAmount(old.getBalance().subtract(account.getBalance()));
+			BigDecimal amount = old.getBalance().subtract(account.getBalance());
 			Category checks = categoryDao.checksByType(CategoryType.支出);
 			if (checks == null)
 				throw new MessageSourceException("checks.not.set");
+			checks.setTotal(checks.getTotal().add(amount));
+			checks.setLastUpdate(new Date());
+			OutlayRecord outlay = new OutlayRecord();
+			outlay.setAmount(amount);
 			outlay.setCategory(checks);
 			outlay.setOutlayAccount(account);
 			outlay.setOccurTime(new Date());
 			outlay.setDescription("系统自动添加");
-			recordService.save(outlay);
+			recordDao.save(outlay);
 		}
 		account.setLastUpdate(new Date());
 		account.setDefaultIncome(old.getDefaultIncome());

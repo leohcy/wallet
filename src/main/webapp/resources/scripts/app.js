@@ -149,6 +149,7 @@ Ext.define("wallet.app", {
 		}).show();
 	},
 	prefetch : function(app) {
+		var button = this;
 		var mask = new Ext.LoadMask(Ext.getBody(), {
 			msg : "加载中..."
 		});
@@ -164,7 +165,7 @@ Ext.define("wallet.app", {
 					if (!json.success)
 						Ext.Msg.alert("提示", json.message);
 					else
-						app.tabs(app, "wallet.week", json.data);
+						app.tabs.call(button, app, "wallet.week", json.data);
 				}
 			}
 		});

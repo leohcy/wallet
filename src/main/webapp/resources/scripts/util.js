@@ -1,11 +1,14 @@
 Ext.define("wallet.util", {
-	date : function(date, format) {
+	datef : function(date, format) {
 		if (typeof format == "undefined")
 			format = "Y年m月d日";
 		return Ext.util.Format.date(date, format);
 	},
+	date : function(time) {
+		return util.datef(new Date(time), "Y-m-d");
+	},
 	datetime : function(time) {
-		return util.date(new Date(time), "Y-m-d H:i");
+		return util.datef(new Date(time), "Y-m-d H:i");
 	},
 	addDays : function(date, days) {
 		return Ext.Date.add(date, Ext.Date.DAY, days);

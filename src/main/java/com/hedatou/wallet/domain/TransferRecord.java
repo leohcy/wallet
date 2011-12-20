@@ -6,6 +6,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -13,9 +15,11 @@ public class TransferRecord extends Record {
 
 	@NotNull
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private Account fromAccount;
 	@NotNull
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private Account toAccount;
 
 	public Account getFromAccount() {

@@ -125,8 +125,8 @@ Ext.define("wallet.home", {
 			padding : 40,
 			highlight : 20
 		});
-		var range = util.date(util.addDays(new Date(), -30)) + " ~ "
-				+ util.date(new Date());
+		var range = util.datef(util.addDays(new Date(), -30)) + " ~ "
+				+ util.datef(new Date());
 		return {
 			flex : 3,
 			margin : "3 3 3 0",

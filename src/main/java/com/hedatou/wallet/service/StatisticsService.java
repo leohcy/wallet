@@ -36,8 +36,8 @@ public class StatisticsService {
 				.millisOfDay().withMinimumValue().minusWeeks(weeks - 1);
 		DateTime end = DateTime.now().dayOfWeek().withMaximumValue()
 				.millisOfDay().withMaximumValue();
-		List<Map<String, Object>> outlays = recordDao.groupByWeek(categories,
-				start.toDate(), end.toDate());
+		List<Map<String, Object>> outlays = recordDao.categoriesGroupByWeek(
+				categories, start.toDate(), end.toDate());
 		for (Map<String, Object> outlay : outlays) {
 			DateTime monday = DateTime.now()
 					.withWeekyear((Integer) outlay.get("year"))

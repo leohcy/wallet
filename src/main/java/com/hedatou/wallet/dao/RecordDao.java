@@ -80,15 +80,15 @@ public class RecordDao extends DaoSupport<Record> {
 		return paging(criteria).addOrder(Order.desc("occurTime")).list();
 	}
 
-	public List<Map<String, Object>> groupByWeek(List<Category> categories,
-			Date start, Date end) {
+	public List<Map<String, Object>> categoriesGroupByWeek(
+			List<Category> categories, Date start, Date end) {
 		Map<String, Object> params = Maps.newHashMap();
-		params.put("outlay", CategoryType.支出);
+		params.put("categories", categories);
 		params.put("start", start);
 		params.put("end", end);
 		StringBuilder sql = new StringBuilder();
 		sql.append("select new map(iso_year(r.occurTime) as year, iso_week(r.occurTime) as week,");
-		sql.append("sum(case when r.category.type=:outlay then r.amount else 0 end) as total");
+		sql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
 		for (Category category : categories) {
 			params.put("c" + category.getId(), category);
 			sql.append(",sum(case when r.category=:c");
@@ -97,7 +97,7 @@ public class RecordDao extends DaoSupport<Record> {
 			sql.append(category.getId());
 		}
 		sql.append(") from Record r where r.occurTime between :start and :end ");
-		sql.append("group by iso_year(r.occurTime), iso_week(r.occurTime) order by year, week");
+		sql.append("group by iso_year(r.occurTime), iso_week(r.occurTime) order by year desc, week desc");
 		return maps(sql.toString(), params);
 	}
 

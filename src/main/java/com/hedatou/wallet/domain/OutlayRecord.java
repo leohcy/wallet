@@ -6,6 +6,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -13,6 +15,7 @@ public class OutlayRecord extends Record {
 
 	@NotNull
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private Account outlayAccount;
 
 	public Account getOutlayAccount() {
