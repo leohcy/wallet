@@ -1,5 +1,7 @@
 Ext.define("wallet.util", {
 	datef : function(date, format) {
+		if (typeof date == "number")
+			date = new Date(date);
 		if (typeof format == "undefined")
 			format = "Y年m月d日";
 		return Ext.util.Format.date(date, format);
@@ -105,10 +107,6 @@ Ext.define("wallet.util", {
 				}
 			} ]
 		};
-		if (args.legend !== false)
-			params.legend = {
-				position : args.legend || "right"
-			};
 		if (typeof args.params != "undefined")
 			Ext.apply(params, args.params);
 		if (typeof args.listeners != "undefined")
@@ -136,7 +134,7 @@ Ext.define("wallet.util", {
 				fields : args.name,
 				label : {
 					rotate : {
-						degrees : 330
+						degrees : args.degrees || 330
 					}
 				}
 			} ],
@@ -147,8 +145,9 @@ Ext.define("wallet.util", {
 				label : {
 					display : "insideEnd",
 					field : args.value,
-					renderer : util.currency,
+					renderer : args.label || util.currency,
 					"text-anchor" : "middle",
+					orientation : args.orientation || "horizontal",
 					color : "#000"
 				},
 				tips : {

@@ -414,7 +414,6 @@ Ext.define("wallet.category", {
 			store : store,
 			name : "name",
 			value : "total",
-			legend : false,
 			tpl : "分类：{0}<br/>金额：{1}<br/>比重：{2}",
 			build : function(item) {
 				return [ item.get("name"), util.currency(item.get("total")),

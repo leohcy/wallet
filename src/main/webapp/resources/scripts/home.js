@@ -82,7 +82,7 @@ Ext.define("wallet.home", {
 			}
 		});
 		return {
-			flex : 2,
+			flex : 1,
 			margin : "3",
 			title : "资产状况",
 			layout : {
@@ -130,7 +130,7 @@ Ext.define("wallet.home", {
 		var range = util.datef(util.addDays(new Date(), -30)) + " ~ "
 				+ util.datef(new Date());
 		return {
-			flex : 3,
+			flex : 1,
 			margin : "3 3 3 0",
 			title : "近30日消费分布",
 			layout : "fit",
