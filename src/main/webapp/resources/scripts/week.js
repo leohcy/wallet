@@ -20,17 +20,46 @@ Ext.define("wallet.week", {
 				},
 				items : [ {
 					flex : 3
-				}, {
-					flex : 1
-				} ]
+				}, this.initPie() ]
 			}, this.initGrid() ]
 		});
 		this.callParent(arguments);
 	},
 
+	initPie : function() {
+		var store = this.pieStore = Ext.create("Ext.data.ArrayStore", {
+			fields : [ "name", "amount" ]
+		});
+		return util.pie({
+			params : {
+				flex : 1
+			},
+			store : this.pieStore,
+			name : "name",
+			value : "amount",
+			legend : false,
+			tpl : "分类：{0}<br/>金额：{1}<br/>比重：{2}",
+			build : function(item) {
+				return [ item.get("name"), util.currency(item.get("amount")),
+						util.percent(item.get("amount") / store.sumAmount) ];
+			},
+			highlight : 5,
+			listeners : {
+				beforerefresh : function() {
+					this.series.items[0].labelsGroup.each(function(label) {
+						label.hide(true);
+					});
+				}
+			}
+		});
+	},
+
 	initGrid : function() {
+		var panel = this;
 		var fields = [ "monday", "sunday", "total" ];
 		var columns = [ {
+			xtype : "rownumberer"
+		}, {
 			text : "开始时间",
 			dataIndex : "monday",
 			width : 80,
@@ -51,8 +80,10 @@ Ext.define("wallet.week", {
 			hideable : false,
 			renderer : util.currency
 		} ];
+		this.categories = {};
 		for ( var category in this.params) {
 			var idx = "c" + this.params[category].id;
+			this.categories[idx] = this.params[category].name;
 			fields.push(idx);
 			columns.push({
 				text : this.params[category].name,
@@ -64,7 +95,10 @@ Ext.define("wallet.week", {
 		}
 		var store = util.store({
 			fields : fields,
-			url : "/statistics/latestWeekOutlay"
+			url : "/statistics/latestWeekOutlay",
+			load : function() {
+				panel.down("grid").getSelectionModel().select(0);
+			}
 		});
 		store.proxy.extraParams = {
 			weeks : 24
@@ -76,7 +110,25 @@ Ext.define("wallet.week", {
 			loadMask : true,
 			forceFit : true,
 			store : store,
-			columns : columns
+			columns : columns,
+			listeners : {
+				selectionchange : function() {
+					var sm = this.getSelectionModel();
+					if (sm.getCount() == 1)
+						panel.select(sm.getSelection()[0]);
+				}
+			}
 		};
+	},
+	select : function(record) {
+		var data = [];
+		for ( var category in this.categories)
+			if (record.get(category) > 0)
+				data.push([ this.categories[category], record.get(category) ]);
+		Ext.Array.sort(data, function(a, b) {
+			return b[1] - a[1];
+		});
+		this.pieStore.loadData(data);
+		this.pieStore.sumAmount = this.pieStore.sum("amount");
 	}
 });

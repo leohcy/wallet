@@ -33,6 +33,8 @@ Ext.define("wallet.home", {
 			forceFit : true,
 			store : store,
 			columns : [ {
+				xtype : "rownumberer"
+			}, {
 				text : "名称",
 				dataIndex : "name",
 				width : 120,
