@@ -27,8 +27,8 @@
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${db};MVCC=TRUE;AUTO_SERVER=TRUE" />
-		<property name="user" value="${user}" />
-		<property name="password" value="${passwd}" />
+		<property name="user" value="#{applicationProperties.user.trim()}" />
+		<property name="password" value="#{applicationProperties.passwd.trim()}" />
 		<property name="minPoolSize" value="${minPool}" />
 		<property name="maxPoolSize" value="${maxPool}" />
 	</bean>

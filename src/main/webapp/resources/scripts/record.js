@@ -13,22 +13,34 @@ Ext.define("wallet.record", {
 
 	initForm : function() {
 		var store1 = Ext.create("Ext.data.ArrayStore", {
-			fields : [ "name" ],
-			data : [ [ "收入" ], [ "支出" ], [ "转账" ] ]
+			fields : [ "name", "value" ],
+			data : [ [ "不限制", null ], [ "收入", "收入" ], [ "支出", "支出" ],
+					[ "转账", "转账" ] ]
 		});
 		var store2 = util.store({
 			model : "model.category",
 			url : "/category/sorted",
-			autoLoad : false
+			autoLoad : false,
+			load : function() {
+				this.insert(0, Ext.create("model.category", {
+					name : "不限制"
+				}));
+			}
 		});
 		var store3 = Ext.create("Ext.data.ArrayStore", {
-			fields : [ "name" ],
-			data : [ [ "现金" ], [ "储蓄卡" ], [ "信用卡" ], [ "充值卡" ], [ "虚拟账户" ] ]
+			fields : [ "name", "value" ],
+			data : [ [ "不限制", null ], [ "现金", "现金" ], [ "储蓄卡", "储蓄卡" ],
+					[ "信用卡", "信用卡" ], [ "充值卡", "充值卡" ], [ "虚拟账户", "虚拟账户" ] ]
 		});
 		var store4 = util.store({
 			model : "model.account",
 			url : "/account/sorted",
-			autoLoad : false
+			autoLoad : false,
+			load : function() {
+				this.insert(0, Ext.create("model.account", {
+					name : "不限制"
+				}));
+			}
 		});
 		return {
 			region : "north",
@@ -50,7 +62,7 @@ Ext.define("wallet.record", {
 					fieldLabel : "分类",
 					xtype : "combobox",
 					editable : false,
-					valueField : "name",
+					valueField : "value",
 					displayField : "name",
 					store : store1,
 					name : "categoryType",
@@ -74,7 +86,7 @@ Ext.define("wallet.record", {
 					fieldLabel : "账户",
 					xtype : "combobox",
 					editable : false,
-					valueField : "name",
+					valueField : "value",
 					displayField : "name",
 					store : store3,
 					name : "accountType",
@@ -168,10 +180,12 @@ Ext.define("wallet.record", {
 			expand : function() {
 				var type = panel.down("form").getForm().findField(name)
 						.getValue();
-				if (type)
+				if (type) {
+					this.getStore().getAt(0).set("type", type);
 					this.getStore().filter("type", type);
-				else
+				} else {
 					this.getStore().clearFilter();
+				}
 			}
 		};
 	},

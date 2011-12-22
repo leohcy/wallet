@@ -111,21 +111,18 @@ Ext.define("wallet.week", {
 			dataIndex : "monday",
 			width : 80,
 			menuDisabled : true,
-			hideable : false,
 			renderer : util.date
 		}, {
 			text : "结束时间",
 			dataIndex : "sunday",
 			width : 80,
 			menuDisabled : true,
-			hideable : false,
 			renderer : util.date
 		}, {
 			text : "总额",
 			dataIndex : "total",
 			width : 70,
-			hideable : false,
-			renderer : util.currency
+			renderer : util.wrapb(util.currency)
 		} ];
 		this.categories = {};
 		for ( var category in this.params) {
@@ -136,7 +133,6 @@ Ext.define("wallet.week", {
 				text : this.params[category].name,
 				dataIndex : idx,
 				width : 70,
-				hideable : false,
 				renderer : util.currency
 			});
 		}
@@ -155,6 +151,7 @@ Ext.define("wallet.week", {
 			margin : "3",
 			loadMask : true,
 			forceFit : true,
+			enableColumnHide : false,
 			store : store,
 			columns : columns,
 			features : [ {
@@ -164,6 +161,16 @@ Ext.define("wallet.week", {
 					iconCls : "icon-month-stats",
 					handler : function() {
 						panel.current = this.parentMenu.activeHeader.dataIndex;
+						var grid = panel.down("grid");
+						for ( var i = 3; i < grid.columns.length; i++) {
+							if (panel.current == grid.columns[i].dataIndex) {
+								grid.columns[i].renderer = util
+										.wrapb(util.currency);
+							} else {
+								grid.columns[i].renderer = util.currency;
+							}
+						}
+						grid.getView().refresh();
 						panel.loadData.call(store, panel);
 					}
 				}
@@ -185,7 +192,12 @@ Ext.define("wallet.week", {
 			data.push([ record.get("year"), record.get("week"), range,
 					record.get(panel.current), record.get("total") ]);
 		});
-		data.reverse();
+		Ext.Array.sort(data, function(a, b) {
+			var year = a[0] - b[0];
+			if (year != 0)
+				return year;
+			return a[1] - b[1];
+		});
 		panel.colStore.loadData(data);
 		panel.down("grid").getSelectionModel().select(0);
 	},

@@ -33,8 +33,8 @@ Ext.define("wallet.app", {
 					columns : 1,
 					defaults : {
 						xtype : "button",
-						scale : "large",
-						margin : "3",
+						scale : "medium",
+						margin : "6",
 						cls : "menu-button",
 						width : 120
 					}

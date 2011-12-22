@@ -45,6 +45,11 @@ Ext.define("wallet.util", {
 		return "<img src='" + "/resources/images/accept.png"
 				+ "' alt='' style='width:14px; height:14px;' />";
 	},
+	wrapb : function(callback) {
+		return function(value) {
+			return "<b>" + callback(value) + "</b>";
+		};
+	},
 
 	store : function(args) {
 		var params = {
