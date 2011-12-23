@@ -115,7 +115,7 @@ public class RecordService {
 		if (!oldc.equals(newc)
 				|| old.getAmount().compareTo(record.getAmount()) != 0) {
 			oldc.setLastUpdate(new Date());
-			oldc.setTotal(oldc.getTotal().subtract(record.getAmount()));
+			oldc.setTotal(oldc.getTotal().subtract(old.getAmount()));
 			newc.setLastUpdate(new Date());
 			newc.setTotal(newc.getTotal().add(record.getAmount()));
 		}
