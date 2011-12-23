@@ -101,4 +101,25 @@ public class RecordDao extends DaoSupport<Record> {
 		return maps(sql.toString(), params);
 	}
 
+	public List<Map<String, Object>> categoriesGroupByMonth(
+			List<Category> categories, Date start, Date end) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("categories", categories);
+		params.put("start", start);
+		params.put("end", end);
+		StringBuilder sql = new StringBuilder();
+		sql.append("select new map(year(r.occurTime) as year, month(r.occurTime) as month,");
+		sql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
+		for (Category category : categories) {
+			params.put("c" + category.getId(), category);
+			sql.append(",sum(case when r.category=:c");
+			sql.append(category.getId());
+			sql.append(" then r.amount else 0 end) as c");
+			sql.append(category.getId());
+		}
+		sql.append(") from Record r where r.occurTime between :start and :end ");
+		sql.append("group by year(r.occurTime), month(r.occurTime) order by year, month");
+		return maps(sql.toString(), params);
+	}
+
 }

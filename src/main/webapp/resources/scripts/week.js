@@ -30,7 +30,7 @@ Ext.define("wallet.week", {
 		});
 		return util.column({
 			params : {
-				flex : 3
+				flex : 2
 			},
 			store : store,
 			name : "range",
@@ -143,7 +143,7 @@ Ext.define("wallet.week", {
 			load : this.loadData.delegate(this)
 		});
 		store.proxy.extraParams = {
-			weeks : 24
+			weeks : 15
 		};
 		return {
 			xtype : "grid",

@@ -50,4 +50,14 @@ public class StatisticsService {
 		return outlays;
 	}
 
+	public List<Map<String, Object>> latestMonthOutlay(int months) {
+		List<Category> categories = categoryDao.byType(CategoryType.支出);
+		DateTime start = DateTime.now().dayOfMonth().withMinimumValue()
+				.millisOfDay().withMinimumValue().minusMonths(months - 1);
+		DateTime end = DateTime.now().dayOfMonth().withMaximumValue()
+				.millisOfDay().withMaximumValue();
+		return recordDao.categoriesGroupByMonth(categories, start.toDate(),
+				end.toDate());
+	}
+
 }

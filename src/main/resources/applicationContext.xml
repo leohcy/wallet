@@ -21,14 +21,14 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	
-	<util:properties id="applicationProperties" location="classpath:application.properties" />
-	<context:property-placeholder properties-ref="applicationProperties" />
+	<util:properties id="walletProperties" location="classpath:wallet.properties" />
+	<context:property-placeholder properties-ref="walletProperties" />
 	
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${db};MVCC=TRUE;AUTO_SERVER=TRUE" />
-		<property name="user" value="#{applicationProperties.user.trim()}" />
-		<property name="password" value="#{applicationProperties.passwd.trim()}" />
+		<property name="user" value="#{walletProperties.user.trim()}" />
+		<property name="password" value="#{walletProperties.passwd.trim()}" />
 		<property name="minPoolSize" value="${minPool}" />
 		<property name="maxPoolSize" value="${maxPool}" />
 	</bean>

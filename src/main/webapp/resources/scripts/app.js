@@ -63,11 +63,11 @@ Ext.define("wallet.app", {
 					items : [ {
 						text : "周&nbsp;统&nbsp;计",
 						iconCls : "icon-week-stats",
-						handler : this.prefetch.delegate(this)
+						handler : this.prefetch.delegate(this, "wallet.week")
 					}, {
 						text : "月&nbsp;统&nbsp;计",
 						iconCls : "icon-month-stats",
-						handler : this.tabs.delegate(this, "wallet.month")
+						handler : this.prefetch.delegate(this, "wallet.month")
 					}, {
 						text : "资产统计",
 						iconCls : "icon-asset-stats",
@@ -148,7 +148,7 @@ Ext.define("wallet.app", {
 			}
 		}).show();
 	},
-	prefetch : function(app) {
+	prefetch : function(app, widget) {
 		var button = this;
 		var mask = new Ext.LoadMask(Ext.getBody(), {
 			msg : "加载中..."
@@ -165,7 +165,7 @@ Ext.define("wallet.app", {
 					if (!json.success)
 						Ext.Msg.alert("提示", json.message);
 					else
-						app.tabs.call(button, app, "wallet.week", json.data);
+						app.tabs.call(button, app, widget, json.data);
 				}
 			}
 		});

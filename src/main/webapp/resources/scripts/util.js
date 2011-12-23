@@ -129,10 +129,7 @@ Ext.define("wallet.util", {
 				position : "left",
 				fields : args.value,
 				grid : true,
-				minimum : 0,
-				label : {
-					renderer : util.currency
-				}
+				minimum : 0
 			}, {
 				type : "Category",
 				position : "bottom",

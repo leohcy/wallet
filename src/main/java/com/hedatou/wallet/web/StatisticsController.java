@@ -29,4 +29,11 @@ public class StatisticsController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("latestMonthOutlay")
+	public View latestMonthOutlay(int months, Model model) {
+		model.addAttribute("data", service.latestMonthOutlay(months))
+				.addAttribute("success", true);
+		return view;
+	}
+
 }
