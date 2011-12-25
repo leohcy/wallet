@@ -36,4 +36,11 @@ public class StatisticsController extends ControllerSupport {
 		return view;
 	}
 
+	@RequestMapping("latestMonth")
+	public View latestMonth(int months, Model model) {
+		model.addAttribute("data", service.latestMonth(months)).addAttribute(
+				"success", true);
+		return view;
+	}
+
 }

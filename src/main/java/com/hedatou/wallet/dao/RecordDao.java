@@ -86,19 +86,19 @@ public class RecordDao extends DaoSupport<Record> {
 		params.put("categories", categories);
 		params.put("start", start);
 		params.put("end", end);
-		StringBuilder sql = new StringBuilder();
-		sql.append("select new map(iso_year(r.occurTime) as year, iso_week(r.occurTime) as week,");
-		sql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
+		StringBuilder hql = new StringBuilder();
+		hql.append("select new map(iso_year(r.occurTime) as year, iso_week(r.occurTime) as week,");
+		hql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
 		for (Category category : categories) {
 			params.put("c" + category.getId(), category);
-			sql.append(",sum(case when r.category=:c");
-			sql.append(category.getId());
-			sql.append(" then r.amount else 0 end) as c");
-			sql.append(category.getId());
+			hql.append(",sum(case when r.category=:c");
+			hql.append(category.getId());
+			hql.append(" then r.amount else 0 end) as c");
+			hql.append(category.getId());
 		}
-		sql.append(") from Record r where r.occurTime between :start and :end ");
-		sql.append("group by iso_year(r.occurTime), iso_week(r.occurTime) order by year desc, week desc");
-		return maps(sql.toString(), params);
+		hql.append(") from Record r where r.occurTime between :start and :end ");
+		hql.append("group by iso_year(r.occurTime), iso_week(r.occurTime) order by year desc, week desc");
+		return maps(hql.toString(), params);
 	}
 
 	public List<Map<String, Object>> categoriesGroupByMonth(
@@ -107,19 +107,29 @@ public class RecordDao extends DaoSupport<Record> {
 		params.put("categories", categories);
 		params.put("start", start);
 		params.put("end", end);
-		StringBuilder sql = new StringBuilder();
-		sql.append("select new map(year(r.occurTime) as year, month(r.occurTime) as month,");
-		sql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
+		StringBuilder hql = new StringBuilder();
+		hql.append("select new map(year(r.occurTime) as year, month(r.occurTime) as month,");
+		hql.append("sum(case when r.category in :categories then r.amount else 0 end) as total");
 		for (Category category : categories) {
 			params.put("c" + category.getId(), category);
-			sql.append(",sum(case when r.category=:c");
-			sql.append(category.getId());
-			sql.append(" then r.amount else 0 end) as c");
-			sql.append(category.getId());
+			hql.append(",sum(case when r.category=:c");
+			hql.append(category.getId());
+			hql.append(" then r.amount else 0 end) as c");
+			hql.append(category.getId());
 		}
-		sql.append(") from Record r where r.occurTime between :start and :end ");
-		sql.append("group by year(r.occurTime), month(r.occurTime) order by year, month");
-		return maps(sql.toString(), params);
+		hql.append(") from Record r where r.occurTime between :start and :end ");
+		hql.append("group by year(r.occurTime), month(r.occurTime) order by year, month");
+		return maps(hql.toString(), params);
+	}
+
+	public List<Map<String, Object>> groupByMonth(Date start, Date end) {
+		String hql = "select new map(year(r.occurTime) as year, month(r.occurTime) as month,"
+				+ "sum(case when r.category.type=:income then r.amount else 0 end) as income,"
+				+ "sum(case when r.category.type=:outlay then r.amount else 0 end) as outlay) "
+				+ "from Record r where r.occurTime between :start and :end "
+				+ "group by year(r.occurTime), month(r.occurTime) order by year, month";
+		return maps(hql, ImmutableMap.of("income", CategoryType.收入, "outlay",
+				CategoryType.支出, "start", start, "end", end));
 	}
 
 }

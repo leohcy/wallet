@@ -32,7 +32,7 @@ Ext.define("wallet.month", {
 		};
 		return {
 			xtype : "chart",
-			margin : "10 40 10 10",
+			margin : "0 50 0 0",
 			animate : true,
 			store : store,
 			legend : {
@@ -56,7 +56,6 @@ Ext.define("wallet.month", {
 				title : names,
 				stacked : true,
 				tips : {
-					trackMouse : true,
 					width : 140,
 					renderer : (function() {
 						var tpl = new Ext.Template(

@@ -1,5 +1,6 @@
 package com.hedatou.wallet.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -43,6 +44,10 @@ public class AccountDao extends DaoSupport<Account> {
 		criteria.add(includeTo ? Restrictions.le("orderNo", to) : Restrictions
 				.lt("orderNo", to));
 		return criteria.list();
+	}
+
+	public BigDecimal total() {
+		return unique("select sum(a.balance) from Account a", BigDecimal.class);
 	}
 
 }

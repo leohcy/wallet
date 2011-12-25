@@ -1,5 +1,6 @@
 package com.hedatou.wallet.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hedatou.wallet.dao.AccountDao;
 import com.hedatou.wallet.dao.CategoryDao;
 import com.hedatou.wallet.dao.RecordDao;
 import com.hedatou.wallet.domain.Category;
@@ -21,6 +23,8 @@ public class StatisticsService {
 	private RecordDao recordDao;
 	@Autowired
 	private CategoryDao categoryDao;
+	@Autowired
+	private AccountDao accountDao;
 
 	public List<Map<String, Object>> latest30DaysOutlay() {
 		DateTime start = DateTime.now().millisOfDay().withMinimumValue()
@@ -58,6 +62,22 @@ public class StatisticsService {
 				.millisOfDay().withMaximumValue();
 		return recordDao.categoriesGroupByMonth(categories, start.toDate(),
 				end.toDate());
+	}
+
+	public List<Map<String, Object>> latestMonth(int months) {
+		DateTime start = DateTime.now().dayOfMonth().withMinimumValue()
+				.millisOfDay().withMinimumValue().minusMonths(months - 1);
+		DateTime end = DateTime.now().dayOfMonth().withMaximumValue()
+				.millisOfDay().withMaximumValue();
+		BigDecimal balance = accountDao.total();
+		List<Map<String, Object>> stats = recordDao.groupByMonth(
+				start.toDate(), end.toDate());
+		for (int i = stats.size() - 1; i >= 0; i--) {
+			stats.get(i).put("balance", balance);
+			balance = balance.subtract((BigDecimal) stats.get(i).get("income"))
+					.add((BigDecimal) stats.get(i).get("outlay"));
+		}
+		return stats;
 	}
 
 }
