@@ -4,6 +4,7 @@
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="robots" content="noindex,nofollow" />
 		<title>我的账本</title>
 		<link rel="stylesheet" type="text/css" href="/resources/ext-4.0.7/css/ext-all.css" />
 		<style type="text/css">

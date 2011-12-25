@@ -56,6 +56,7 @@ Ext.define("wallet.month", {
 				title : names,
 				stacked : true,
 				tips : {
+					trackMouse : true,
 					width : 140,
 					renderer : (function() {
 						var tpl = new Ext.Template(

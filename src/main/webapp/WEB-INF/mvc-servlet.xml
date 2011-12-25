@@ -25,12 +25,18 @@
 	<mvc:interceptors>
 		<bean class="com.hedatou.wallet.util.PagingParamsCleaner" />
 	</mvc:interceptors>
+
 	<mvc:default-servlet-handler />
+
 	<mvc:resources mapping="/resources/**" location="/resources/" cache-period="${resourcesCache}" />
 	<mvc:resources mapping="/favicon.ico" location="/resources/images/" cache-period="${resourcesCache}" />
+
 	<mvc:view-controller path="/" view-name="index" />
+	<mvc:view-controller path="/login" view-name="login" />
+
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+
 	<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
 
 </beans>

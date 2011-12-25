@@ -26,6 +26,7 @@ Ext.define("wallet.asset", {
 			months : 12
 		};
 		var tips = {
+			trackMouse : true,
 			width : 150,
 			renderer : util.renderer("{0}<br/>本月消费：{1}<br/>"
 					+ "本月收入：{2}<br/>月末资产：{3}", function(item) {
