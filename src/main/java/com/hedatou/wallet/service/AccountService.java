@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,7 +85,7 @@ public class AccountService {
 			income.setAmount(amount);
 			income.setCategory(checks);
 			income.setIncomeAccount(account);
-			income.setOccurTime(new Date());
+			income.setOccurTime(DateTime.now().minusSeconds(5).toDate());
 			income.setDescription("系统自动添加");
 			recordDao.save(income);
 		} else if (compare < 0) {
@@ -98,7 +99,7 @@ public class AccountService {
 			outlay.setAmount(amount);
 			outlay.setCategory(checks);
 			outlay.setOutlayAccount(account);
-			outlay.setOccurTime(new Date());
+			outlay.setOccurTime(DateTime.now().minusSeconds(5).toDate());
 			outlay.setDescription("系统自动添加");
 			recordDao.save(outlay);
 		}

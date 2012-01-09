@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.hedatou</groupId>
 	<artifactId>wallet</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<packaging>war</packaging>
 	<name>wallet</name>
 	<url>http://wallet.hedatou.com</url>
