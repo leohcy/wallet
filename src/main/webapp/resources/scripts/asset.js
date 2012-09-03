@@ -23,7 +23,7 @@ Ext.define("wallet.asset", {
 			}
 		});
 		store.proxy.extraParams = {
-			months : 12
+			months : 18
 		};
 		var tips = {
 			trackMouse : true,

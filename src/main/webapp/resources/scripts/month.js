@@ -28,7 +28,7 @@ Ext.define("wallet.month", {
 			}
 		});
 		store.proxy.extraParams = {
-			months : 12
+			months : 18
 		};
 		return {
 			xtype : "chart",

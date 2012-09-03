@@ -143,7 +143,7 @@ Ext.define("wallet.week", {
 			load : this.loadData.delegate(this)
 		});
 		store.proxy.extraParams = {
-			weeks : 15
+			weeks : 18
 		};
 		return {
 			xtype : "grid",
